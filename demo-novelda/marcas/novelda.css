@@ -1,0 +1,26 @@
+/* Marca Ayuntamiento de Novelda. Fuente: novelda.es (12/11/2026):
+   verde oliva #617852, azul petróleo #216073, franja lima #EEF5DB, títulos en Oswald, botones en píldora. */
+:root{
+  --bg:#f6f8f1; --panel:#ffffff; --ink:#1d2417; --muted:#59634f; --line:#dfe6d3;
+  --brand:#617852; --brand-ink:#ffffff; --brand-soft:#eef5db;
+  --active-bg:#eef5db; --active-ink:#46593a; --eyebrow:#216073;
+  --map-bg:#eef0e6; --map-grid:rgba(97,120,82,.10);
+  --r-btn:999px; --r-card:18px;
+  --f-head:"Oswald","Arial Narrow",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141812; --panel:#1b2119; --ink:#eef3e6; --muted:#a9b39c; --line:#2e3829;
+  --brand:#9cbf7f; --brand-ink:#11180c; --brand-soft:#26321d; --active-bg:#26321d; --active-ink:#b9d79a; --eyebrow:#7cc0d4;
+  --map-bg:#1a2017; --map-grid:rgba(156,191,127,.10); color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#141812; --panel:#1b2119; --ink:#eef3e6; --muted:#a9b39c; --line:#2e3829;
+  --brand:#9cbf7f; --brand-ink:#11180c; --brand-soft:#26321d; --active-bg:#26321d; --active-ink:#b9d79a; --eyebrow:#7cc0d4;
+  --map-bg:#1a2017; --map-grid:rgba(156,191,127,.10); color-scheme:dark;
+}
+h1,h2,h3,.answer .t,.intro-card h2{font-weight:500;letter-spacing:.01em}
+.topbar{background:var(--brand-soft)}
+.marca b{font-family:var(--f-head);font-size:1rem;letter-spacing:.01em;text-transform:none;font-weight:500}
+.marca .sello.mono{border-radius:50%}
+.qnum{background:var(--eyebrow);color:#fff}
+.sidenav button[aria-current="page"]{box-shadow:inset 3px 0 0 var(--brand)}

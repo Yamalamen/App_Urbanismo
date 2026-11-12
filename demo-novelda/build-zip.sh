@@ -9,6 +9,6 @@ cp video/dist/video-novelda-final.mp4 "$K/06_video_referencia/video-novelda.mp4"
 cp video/dist/video-novelda-final.srt "$K/06_video_referencia/video-novelda.srt"; cp video/dist/video-generico-final.srt "$K/06_video_referencia/video-generico.srt"
 cp zip-src/09_AUDIO_Y_LICENCIAS.md "$K/"
 cp video/dist/fotogramas/*.jpg "$K/06_video_referencia/fotogramas/" 2>/dev/null || true
-cp zip-src/07_capturas_demo/*.png "$K/07_capturas_demo/"; cp dist/visor-novelda-demo.html "$K/08_demo_interactiva/"
+cp zip-src/07_capturas_demo/*.png "$K/07_capturas_demo/"; cp dist/visor-novelda-ayuntamiento.html dist/visor-novelda-demo.html "$K/08_demo_interactiva/"
 rm -f dist/kit-video-visor-urbanistico.zip; (cd "$T" && zip -qr -9 - kit-video-visor-urbanistico) > dist/kit-video-visor-urbanistico.zip
 rm -rf "$T"; unzip -l dist/kit-video-visor-urbanistico.zip | tail -n +1

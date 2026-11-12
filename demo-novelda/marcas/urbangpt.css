@@ -1,0 +1,4 @@
+/* Marca UrbanGPT · PeritiaUrbana (la del visor de Elche). Es la de la versión publicada como enlace. */
+:root{--active-bg:#fbede6;--active-ink:#c2410c;--eyebrow:#c2410c}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--active-bg:#3a2216;--active-ink:#f0a07a;--eyebrow:#f0a07a}}
+:root[data-theme="dark"]{--active-bg:#3a2216;--active-ink:#f0a07a;--eyebrow:#f0a07a}

@@ -1,0 +1,6 @@
+{
+  "urbangpt": { "nombre": "Urban · GPT", "subtitulo": "Visor Urbanístico · Novelda", "pie": "Demostración · UrbanGPT · PeritiaUrbana" },
+  "novelda":  { "nombre": "Ayuntamiento de Novelda", "subtitulo": "Visor Urbanístico", "selloTexto": "N",
+                "pie": "Propuesta de UrbanGPT · PeritiaUrbana para el Ayuntamiento de Novelda. Versión de demostración.",
+                "escudo": "marcas/escudo-novelda.png" }
+}

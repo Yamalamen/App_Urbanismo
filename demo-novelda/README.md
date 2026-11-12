@@ -2,6 +2,10 @@
 
 Demo guiada para presentar a una persona sin formación técnica (concejalía) el visor urbanístico de UrbanGPT para Novelda.
 
+**Versión para la presentación (imagen del Ayuntamiento de Novelda):** `dist/visor-novelda-ayuntamiento.html`. Es solo un archivo y no se publica como enlace, para que no se confunda con una web oficial. El escudo se añade guardando `marcas/escudo-novelda.png`, con autorización del Ayuntamiento, y ejecutando `node build.js`.
+
+**Estructura:** la misma que el visor de Elche (peritiaurbana.com): menú lateral, migas de pan, mapa con ficha, Informes, Fuentes y trazabilidad y la asistente Analia. Las marcas están en `marcas/` (`novelda.css`, `urbangpt.css` y `marcas.json`).
+
 **Abrir:** `dist/visor-novelda-demo.html` (un único archivo; doble clic y se abre en el navegador, y con internet carga los mapas oficiales).
 `dist/visor-novelda-web.html` es la versión que se publica como enlace: dentro del enlace no se cargan los mapas externos y se muestra un plano esquemático a escala.
 Funciona sin internet. Con internet, además carga el callejero, la foto aérea y las parcelas del Catastro.
