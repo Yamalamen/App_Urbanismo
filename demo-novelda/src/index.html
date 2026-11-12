@@ -270,6 +270,7 @@ details.item .more b{color:var(--ink)}
 
 <script>/*@@LEAFLET_JS@@*/</script>
 <script>/*@@MARCA_JS@@*/</script>
+<script>/*@@ORTO_JS@@*/</script>
 <script>/*@@CASOS_JS@@*/</script>
 <script>
 (function(){
@@ -281,7 +282,7 @@ var mapEl = document.getElementById("map");
 var EMBEBIDO = (function(){ try { return window.self !== window.top; } catch(e){ return true; } })();
 
 /* ================= Mapa ================= */
-var map = L.map("map",{zoomControl:true}).setView(D.centro, D.zoomInicial);
+var map = L.map("map",{zoomControl:true, maxZoom:19}).setView(D.centro, D.zoomInicial);
 L.control.scale({imperial:false, position:"bottomright"}).addTo(map);
 var callejero = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19, attribution:"© OpenStreetMap"});
 var orto = L.tileLayer.wms("https://www.ign.es/wms-inspire/pnoa-ma",{layers:"OI.OrthoimageCoverage", format:"image/jpeg", maxZoom:20, attribution:"PNOA © IGN"});
@@ -291,8 +292,18 @@ var okTiles = 0, badTiles = 0, esquema = false;
   l.on("tileload",function(){ okTiles++; if(esquema){ esquema=false; mapEl.classList.remove("esquema"); var n=document.querySelector(".mapnote"); if(n) n.remove(); } });
   l.on("tileerror",function(){ badTiles++; if(badTiles>=4 && okTiles===0 && !esquema) activarEsquema(); });
 });
-callejero.addTo(map);
+var ORTO = window.ORTO || null, ortoEmb = L.layerGroup();
+if(ORTO){
+  map.createPane("ortoPane"); map.getPane("ortoPane").style.zIndex = 250;
+  ORTO.capas.slice().sort(function(a,b){ return a.nivel-b.nivel; }).forEach(function(c){
+    L.imageOverlay(c.src, c.bounds, {pane:"ortoPane", attribution: c.nivel===0 ? "Ortofoto PNOA © Instituto Geográfico Nacional" : ""}).addTo(ortoEmb);
+  });
+  var g = ORTO.capas.filter(function(c){ return c.nivel===0; })[0];
+  if(g){ map.setMaxBounds(L.latLngBounds(g.bounds).pad(0.05)); map.setMinZoom(13); }
+}
+(ORTO ? ortoEmb : callejero).addTo(map);
 function activarEsquema(){
+  if(ORTO && map.hasLayer(ortoEmb)) return;   // con ortofoto incrustada no hace falta el plano esquemático
   esquema = true; mapEl.classList.add("esquema");
   var n = document.createElement("div"); n.className="mapnote";
   n.textContent = "Plano esquemático: los puntos están en su posición real y a escala. El fondo cartográfico oficial se carga en el visor final.";
@@ -301,8 +312,8 @@ function activarEsquema(){
 
 var layersBox = L.DomUtil.create("div","layers");
 layersBox.innerHTML =
-  '<button type="button" data-l="callejero" aria-pressed="true">Callejero</button>'+
-  '<button type="button" data-l="orto" aria-pressed="false">Foto aérea</button>'+
+  '<button type="button" data-l="orto" aria-pressed="true">Foto aérea</button>'+
+  '<button type="button" data-l="callejero" aria-pressed="false">Callejero</button>'+
   '<button type="button" data-l="catastro" aria-pressed="false">Parcelas</button>';
 mapEl.appendChild(layersBox);
 L.DomEvent.disableClickPropagation(layersBox);
@@ -314,6 +325,7 @@ layersBox.addEventListener("click",function(e){
 });
 function btn(k){ return layersBox.querySelector('[data-l="'+k+'"]'); }
 function setBase(k){
+  if(ORTO){ if(k==="orto"){ if(!map.hasLayer(ortoEmb)) ortoEmb.addTo(map); } else if(map.hasLayer(ortoEmb)) map.removeLayer(ortoEmb); }
   var on = k==="orto" ? orto : callejero, off = k==="orto" ? callejero : orto;
   if(map.hasLayer(off)) map.removeLayer(off);
   if(!map.hasLayer(on)){ on.addTo(map); on.bringToBack(); }
@@ -345,6 +357,7 @@ function contorno(c){
 }
 var contornoActivo = null;
 function mostrarContorno(id){
+  return;   // sobre ortofoto real no se dibujan linderos ilustrativos: solo el marcador en su ubicación real
   if(contornoActivo){ map.removeLayer(contornoActivo); contornoActivo=null; }
   if(id && contornos[id]){ contornoActivo = contornos[id].addTo(map); }
 }
@@ -416,7 +429,7 @@ function bindBack(id, fn){ var el=document.getElementById(id); if(el) el.onclick
 function renderInicio(){
   state = {view:"inicio", caso:null, paso:0};
   setMigas(["Visor"], "visor");
-  mostrarContorno(null); setCatastro(false); setBase("callejero");
+  mostrarContorno(null); setCatastro(false); setBase("orto");
   irA(D.centro, D.zoomInicial);
   panel.innerHTML =
     '<span class="qnum">Bienvenida</span>'+
@@ -522,7 +535,7 @@ function renderPaso(){
              '<span class="qnum">'+c.icono+' Paso '+(p+1)+' de '+PASOS.length+' · '+esc(PASOS[p])+'</span><span class="casen">Ejemplo '+(D.casos.indexOf(c)+1)+' de '+D.casos.length+'</span>'+guiaHtml(p);
   var body = "";
   if(p===0){
-    mostrarContorno(c.id); setBase("callejero"); setCatastro(false); irA(c.coords, c.zoom);
+    mostrarContorno(c.id); setBase("orto"); setCatastro(false); irA(c.coords, c.zoom);
     body = '<h2>'+esc(c.titulo)+'</h2><p class="muted">'+esc(c.persona)+'</p>'+
       '<div class="answer"><div class="eyebrow">Ubicación</div><div class="t">'+lugarHtml(c)+'</div></div>'+
       '<p>Basta con <b>escribir la dirección o la referencia catastral</b>, o tocar la parcela en el mapa.</p>'+
@@ -579,7 +592,7 @@ function renderPaso(){
 function renderFin(){
   state = {view:"fin", caso:null, paso:0};
   setMigas(["Visor","Resumen"], "visor");
-  mostrarContorno(null); setCatastro(false); setBase("callejero"); irA(D.centro, D.zoomInicial);
+  mostrarContorno(null); setCatastro(false); setBase("orto"); irA(D.centro, D.zoomInicial);
   panel.innerHTML =
     '<button class="back" type="button" id="toInicio">← Volver al inicio</button>'+
     '<span class="qnum">Resumen</span>'+
@@ -740,7 +753,7 @@ function renderFuentes(){
     '<p class="muted" style="max-width:62ch">Ningún dato se muestra sin decir de dónde viene y cuándo se consultó. Lo que la fuente no dice queda pendiente: nunca se rellena con una estimación.</p>'+
     '<h2>Procedencia de la cartografía</h2><div class="tblw"><table><thead><tr><th>Organismo</th><th>Qué aporta</th><th>Servicio</th><th>Estado en esta demostración</th></tr></thead><tbody>'+
       '<tr><td><b>Dirección General del Catastro</b></td><td>Referencia catastral, localización y superficie de la parcela.</td><td>Servicios OVC y WMS de cartografía catastral.</td><td>Capa de parcelas visible con conexión; la consulta en directo se activa en el visor final.</td></tr>'+
-      '<tr><td><b>Instituto Geográfico Nacional (IGN)</b></td><td>Ortofoto actual.</td><td>PNOA (WMS).</td><td>Visible con conexión a internet.</td></tr>'+
+      '<tr><td><b>Instituto Geográfico Nacional (IGN)</b></td><td>Ortofoto actual de Novelda.</td><td>PNOA máxima actualidad (WMS). Licencia CC BY 4.0.</td><td>'+(ORTO ? 'Incrustada en el visor (descargada el '+esc(ORTO.descargado)+'): se ve siempre, también sin conexión.' : 'Visible con conexión a internet.')+'</td></tr>'+
       '<tr><td><b>Institut Cartogràfic Valencià (ICV)</b></td><td>Clasificación y zonificación del planeamiento.</td><td>Cartografía de planeamiento urbanístico.</td><td>Pendiente: cobertura para '+esc(D.municipio)+' por verificar.</td></tr>'+
     '</tbody></table></div>'+
     '<h2>Procedencia de la normativa</h2><div class="tblw"><table><thead><tr><th>Organismo</th><th>Qué aporta</th><th>Documento</th><th>Estado en esta demostración</th></tr></thead><tbody>'+

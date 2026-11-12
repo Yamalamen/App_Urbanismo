@@ -11,13 +11,21 @@ const F = [["Fraunces",600,"fraunces-latin-600-normal"],["Fraunces",700,"fraunce
   ["Oswald",400,"oswald-latin-400-normal"],["Oswald",500,"oswald-latin-500-normal"],["Oswald",600,"oswald-latin-600-normal"]];
 const fonts = F.map(([f,w,n]) => `@font-face{font-family:"${f}";font-weight:${w};font-style:normal;font-display:swap;src:url(data:font/woff2;base64,${fs.readFileSync(path.join(__dirname,"video/fonts",n+".woff2")).toString("base64")}) format("woff2")}`).join("\n");
 const MARCAS = JSON.parse(r("marcas/marcas.json"));
+// Ortofoto real (PNOA, IGN) descargada con tools/descarga_orto.py; se incrusta para que se vea siempre.
+let ortoJs = "window.ORTO=null;";
+if (fs.existsSync(path.join(__dirname, "assets/orto/orto.json"))) {
+  const meta = JSON.parse(r("assets/orto/orto.json"));
+  meta.capas = meta.capas.map(c => ({ id: c.id, nivel: c.nivel, bounds: c.bounds, m_px: c.m_px,
+    src: "data:image/jpeg;base64," + fs.readFileSync(path.join(__dirname, "assets/orto", c.archivo)).toString("base64") }));
+  ortoJs = "window.ORTO=" + JSON.stringify(meta) + ";";
+}
 function compila(marca){
   let html = r("src/index.html");
   const m = Object.assign({}, MARCAS[marca]);
   if (m.escudo) { const e = path.join(__dirname, m.escudo); if (fs.existsSync(e)) m.logo = "data:image/png;base64," + fs.readFileSync(e).toString("base64"); delete m.escudo; }
   const parts = { "/*@@FONTS@@*/": fonts, "/*@@THEME@@*/": r(`marcas/${marca}.css`),
                   "/*@@LEAFLET_CSS@@*/": r("vendor/leaflet.css"), "/*@@LEAFLET_JS@@*/": r("vendor/leaflet.js"),
-                  "/*@@MARCA_JS@@*/": "window.MARCA=" + JSON.stringify(m) + ";", "/*@@CASOS_JS@@*/": r("src/casos.js") };
+                  "/*@@MARCA_JS@@*/": "window.MARCA=" + JSON.stringify(m) + ";", "/*@@ORTO_JS@@*/": ortoJs, "/*@@CASOS_JS@@*/": r("src/casos.js") };
   for (const [k, v] of Object.entries(parts)) {
     if (!html.includes(k)) throw new Error("Falta marcador " + k);
     if (/<\/script/i.test(v)) throw new Error("Contenido con </script>: " + k);

@@ -6,6 +6,8 @@ Demo guiada para presentar a una persona sin formación técnica (concejalía) e
 
 **Estructura:** la misma que el visor de Elche (peritiaurbana.com): menú lateral, migas de pan, mapa con ficha, Informes, Fuentes y trazabilidad y la asistente Analia. Las marcas están en `marcas/` (`novelda.css`, `urbangpt.css` y `marcas.json`).
 
+**Ortofoto real:** el visor lleva incrustada la ortofoto PNOA del IGN (CC BY 4.0) de Novelda: una vista general, el casco urbano y el detalle de cada ejemplo (`assets/orto/`). Se ve siempre, también sin internet y en el enlace publicado. Para actualizarla: `python3 tools/descarga_orto.py` y `node build.js`. Sobre la foto real no se dibujan linderos inventados: solo el marcador de cada ejemplo.
+
 **Abrir:** `dist/visor-novelda-demo.html` (un único archivo; doble clic y se abre en el navegador, y con internet carga los mapas oficiales).
 `dist/visor-novelda-web.html` es la versión que se publica como enlace: dentro del enlace no se cargan los mapas externos y se muestra un plano esquemático a escala.
 Funciona sin internet. Con internet, además carga el callejero, la foto aérea y las parcelas del Catastro.
@@ -25,7 +27,8 @@ También tiene un modo de exploración libre: se toca el mapa y se consulta la r
 | Datos de parcela, clasificación, parámetros, cálculos, afecciones, respuestas, hitos de gestión y trámites | **EJEMPLO** (ilustrativo, no oficial; decisión de Jau del 12/11/2026) | Ninguna. Cada valor lleva en pantalla y en el informe la etiqueta «Ejemplo» |
 | Ubicación del caso 5 (urbanizable) | **EJEMPLO**: ubicación ilustrativa | No corresponde a ningún sector real |
 | Coherencia urbanística de los ejemplos | Comprobada con `node test/coherencia.test.js` (146 comprobaciones) | En suelo urbano no se niegan obras ordinarias; en SNU protegido no hay vivienda; en urbanizable no hay solar sin recepción de obras; no se supera la edificabilidad ni la parcela mínima |
-| Capas de mapa (OSM, PNOA del IGN, WMS del Catastro) y consulta catastral en directo | **NO VERIFICADO** desde el entorno de desarrollo (sin red) | Hay que probarlo antes de la reunión, con la conexión del Ayuntamiento |
+| Ortofoto PNOA (IGN) | **Real**: incrustada, descargada el 12/11/2026 del WMS pnoa-ma | Licencia CC BY 4.0 |
+| Callejero (OSM), parcelas del Catastro (WMS) y consulta catastral en directo | **NO VERIFICADO**: el Catastro rechaza las peticiones desde el entorno de desarrollo | Hay que probarlo antes de la reunión, con la conexión del Ayuntamiento |
 
 ## Compilar
 `node build.js` → incrusta Leaflet 1.9.4 (`vendor/`, licencia BSD-2) y `src/casos.js` en `dist/visor-novelda-demo.html`.
