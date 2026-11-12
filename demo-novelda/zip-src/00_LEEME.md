@@ -20,6 +20,5 @@ Todo lo necesario para producir un vídeo de unos 85 s, genérico para cualquier
 - **Versión de Lovable:** abrid la página con `?municipio=Nombre&grabar=1` y grabadla.
 
 ## Pendiente de decisión (Jau)
-1. Si se incluye «Ya en funcionamiento en Elche».
 2. El contacto que aparece en el cierre.
 3. Voz: la locución actual es sintética. Si se prefiere una voz humana, hay que regrabarla siguiendo el `.srt`.

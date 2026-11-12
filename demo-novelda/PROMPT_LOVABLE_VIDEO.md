@@ -14,7 +14,7 @@ Construye una **pieza de vídeo animada, de tipo comercial**, que presente un pr
 
 ### 1. Objetivo y público
 - **Público:** alcaldes, concejales y técnicos municipales, en su mayoría **sin conocimientos urbanísticos ni informáticos**.
-- **Mensaje único:** «Cualquier vecino escribe su dirección y sabe, en lenguaje claro, qué puede hacer en su parcela, con el documento oficial que lo respalda».
+- **Mensaje único:** «Cualquier ciudadano puede usarlo: es tan fácil como buscar en internet. Escribe su dirección y sabe, en lenguaje claro, qué puede hacer en su parcela».
 - **Tono:** moderno, sereno, de confianza institucional. Ritmo ágil, pero se lee todo. Nada de efectos estridentes.
 - **Genérico:** debe servir para cualquier municipio. El nombre del municipio es un parámetro.
 
@@ -24,7 +24,7 @@ export const CONFIG = {
   municipio: "tu municipio",      // se puede cambiar por URL: ?municipio=Novelda
   marca: "UrbanGPT · PeritiaUrbana",
   web: "peritiaurbana.com",
-  referencia: "Ya en funcionamiento en Elche", // [DECIDE JAU] texto exacto, o null para ocultarlo
+  referencia: null,                // decisión de Jau: no se menciona Elche
   contacto: null,                  // [DECIDE JAU] p. ej. "Nombre · teléfono · email", o null
   duracionesSeg: [5,7,6,8,8,10,10,7,9,9,6] // una por escena
 };
@@ -55,15 +55,15 @@ Cada escena es un componente. Usa transiciones suaves de 400 a 600 ms: fundido c
 |---|---|---|---|
 | 1 | 0–5 | Fondo cálido. Aparecen 3 bocadillos de personas distintas (vecina, empresario, comprador), uno tras otro. | «¿Puedo reformar mi casa?» · «¿Puedo ampliar mi nave?» · «¿Este edificio está protegido?» |
 | 2 | 5–12 | Escena del problema, en gris apagado: cola en un mostrador, teléfono sonando y un documento de normas de «300 páginas» que se apila. | «Hoy, para saberlo, hay que pedir cita, llamar… o descifrar cientos de páginas.» |
-| 3 | 12–18 | Corte a color: el logotipo tipográfico y el nombre del producto se dibujan. | «Visor Urbanístico de **{municipio}**» · debajo: «Toda la información urbanística, clara y en un clic.» |
-| 4 | 18–26 | Un móvil en el centro. Se teclea «Calle Mayor, 12» y la cámara se acerca al plano SVG hasta resaltar una parcela con contorno naranja pulsante. | «1 · Escribe tu dirección» |
+| 3 | 12–18 | Corte a color: el logotipo tipográfico y el nombre del producto se dibujan. | «Visor Urbanístico de **{municipio}**» · debajo: «Pensado para cualquier vecino. Sin saber de urbanismo.» |
+| 4 | 18–26 | Un móvil en el centro. Se teclea «Calle Mayor, 12» y la cámara se acerca al plano SVG hasta resaltar una parcela con contorno naranja pulsante. | «1 · Escribe tu dirección» · debajo: «Tan fácil como buscar en internet.» |
 | 5 | 26–34 | Aparece una tarjeta junto a la parcela: «Suelo urbano · Casco tradicional», con una explicación de una línea. | «2 · Descubre qué suelo es, sin tecnicismos» |
 | 6 | 34–44 | Lista de 4 afecciones que se rellenan una a una con su estado (2 «Le afecta» en rojo y 2 «No le afecta» en verde). Una lupa pasa sobre el verde y aparece un sello: «Comprobado con fuente oficial». | «3 · Mira qué le afecta» · luego: «Solo decimos "no le afecta" cuando está comprobado.» |
 | 7 | 44–54 | Preguntas sobre la misma vivienda («¿Puedo reformar el interior?» Sí · «¿Puedo añadir una planta?» Con condiciones · «¿Puedo abrir un taller?» No), con respuestas en forma de chip. Después, un cálculo en mono que se escribe, sobre la **misma vivienda** de las escenas 4 a 6: `140 m² × 2,5 = 350 m²` · `Hecho: 210 m²` · `350 − 210 = 140 m²` → «Cabe una planta más». | «4 · Sabe qué puede hacer, con la cuenta hecha» |
 | 8 | 54–61 | Un PDF sale del móvil. En sus líneas aparecen etiquetas de fuente: «Norma · artículo · fecha». | «5 · Y se lleva un informe con sus fuentes» |
-| 9 | 61–70 | Carrusel rápido de 5 tarjetas sobre el plano: 🏠 Vivienda en el centro · 🏭 Nave industrial · 🏛️ Edificio protegido · 🌳 Suelo rural · 🏗️ Zona en desarrollo (con una barra de hitos: plan ✓, reparto ✓, obras 80 %, recepción pendiente). | «Para vecinos, empresas, compradores y técnicos» |
-| 10 | 70–79 | Cuatro beneficios que entran de uno en uno, con icono lineal. | «Menos consultas en el mostrador» · «Más transparencia: cada dato con su documento» · «Fácil para cualquiera, también desde el móvil» · «Preparado para el nuevo planeamiento» |
-| 11 | 79–85 | Cierre limpio. Si `referencia` no es null, aparece una línea pequeña con ese texto; si `contacto` no es null, aparece también. | «**{municipio}**, en un clic.» · «{marca} · {web}» · aviso legal pequeño (punto 4.3) |
+| 9 | 61–70 | Carrusel rápido de 5 tarjetas sobre el plano: 🏠 Vivienda en el centro · 🏭 Nave industrial · 🏛️ Edificio protegido · 🌳 Suelo rural · 🏗️ Zona en desarrollo (con una barra de hitos: plan ✓, reparto ✓, obras 80 %, recepción pendiente). | «Cualquier ciudadano puede usarlo» · debajo: «Desde el móvil, sin cita y sin saber de urbanismo.» |
+| 10 | 70–79 | Cuatro beneficios que entran de uno en uno, con icono lineal. | «Vecinos que resuelven solos sus dudas» · «Más transparencia: cada dato con su documento» · «Menos consultas en el mostrador» · «Preparado para el nuevo planeamiento» |
+| 11 | 79–85 | Cierre limpio. Si `referencia` no es null, aparece una línea pequeña con ese texto; si `contacto` no es null, aparece también. | «**{municipio}**, en un clic.» · «Fácil para cualquier vecino.» · «{marca} · {web}» · aviso legal pequeño (punto 4.3) |
 
 **Texto en pantalla:** máximo **9 palabras por línea** y **2 líneas por escena**, con tamaño mínimo de 44 px a 1080p. El vídeo debe entenderse **sin sonido**.
 
@@ -85,7 +85,7 @@ Cada escena es un componente. Usa transiciones suaves de 400 a 600 ms: fundido c
 
 ### 9. Criterios de aceptación
 - [ ] Se reproduce sola de principio a fin en 85 s (±3 s), sin saltos ni parpadeos.
-- [ ] Con `?municipio=Novelda` el nombre cambia en las escenas 3 y 11, y con `?municipio=Elche` también.
+- [ ] Con `?municipio=Novelda` el nombre cambia en las escenas 3 y 11, y con `?municipio=Elda` también.
 - [ ] Con `?grabar=1` no se ve ningún control ni cursor.
 - [ ] Ningún escudo, logotipo municipal, mapa real ni foto externa.
 - [ ] La marca «Datos ilustrativos» se ve durante todo el vídeo.
@@ -117,6 +117,10 @@ Cada escena es un componente. Usa transiciones suaves de 400 a 600 ms: fundido c
 4. Recorta el segundo negro inicial. Para otro ayuntamiento, basta con cambiar `?municipio=` y volver a grabar.
 
 ## [DECIDE JAU] antes de pegarlo en Lovable
-1. **`referencia`**: ¿mantenemos «Ya en funcionamiento en Elche»? Solo si es cierto y se puede decir públicamente.
+1. **`referencia`**: decidido, va vacía (sin mención a Elche).
 2. **`contacto`**: nombre, teléfono y email que aparecerán al final, o null.
 3. **Música**: si se usa, debe ser libre de derechos o con licencia comercial.
+
+## Decisiones ya tomadas (Jau)
+- **No se menciona Elche.** Se nombra a Novelda.
+- **Mensaje central:** cualquier ciudadano puede usar la plataforma por lo fácil que es («tan fácil como buscar en internet», «sin cita y sin saber de urbanismo»).

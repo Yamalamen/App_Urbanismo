@@ -39,7 +39,7 @@ Volver a **← Todos los ejemplos** y abrir cada uno solo en el paso 4, **¿Qué
 
 ## 4:15 – 5:00 · Cierre
 **Pantalla:** «Ver resumen» al final del último caso, o el botón Inicio y después el resumen.
-> «Menos consultas en el mostrador, más transparencia, y preparado para el nuevo Plan General. No es una promesa: el mismo sistema ya funciona en Elche.»
+> «Lo más importante: cualquier vecino de Novelda puede usarlo. Es tan fácil como buscar en internet, desde el móvil, sin cita y sin saber de urbanismo. Para el Ayuntamiento, menos consultas en el mostrador, más transparencia y preparado para el nuevo planeamiento.»
 
 > «El siguiente paso sería cargar las Normas Subsidiarias de Novelda y validar los primeros resultados con los técnicos municipales.»
 

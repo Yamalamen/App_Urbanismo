@@ -32,6 +32,7 @@ Fuente: peritiaurbana.com (extraído el 12/11/2026) y la demo de Novelda.
 - Marca fija «Datos ilustrativos» en la esquina inferior derecha.
 
 ## Mensajes clave (en este orden)
+0. **Cualquier ciudadano puede usarlo: es tan fácil como buscar en internet.** Este es el mensaje principal.
 1. Cualquier vecino escribe su dirección y sabe qué puede hacer en su parcela.
 2. En lenguaje claro y con el documento oficial que lo respalda.
 3. Solo decimos «no le afecta» cuando está comprobado.

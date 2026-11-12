@@ -22,15 +22,15 @@ def guion(muni: str):
     return [
         (0, 0.35, "¿Puedo reformar mi casa? ¿Ampliar mi nave? ¿Este edificio está protegido?"),
         (1, 0.45, "Hoy, para saberlo, hay que pedir cita, llamar... o descifrar cientos de páginas de normas."),
-        (2, 0.9,  f"Presentamos el Visor Urbanístico de {m}."),
-        (3, 0.6,  "Basta con escribir la dirección. El visor encuentra la parcela al instante."),
+        (2, 0.6,  f"Presentamos el Visor Urbanístico de {m}. Pensado para cualquier vecino."),
+        (3, 0.6,  "Tan fácil como buscar en internet: escribe la dirección y el visor encuentra la parcela."),
         (4, 0.6,  "Y explica qué tipo de suelo es, en lenguaje claro, sin tecnicismos."),
         (5, 0.6,  "Muestra qué le afecta. Y solo dice «no le afecta» cuando lo ha comprobado con la fuente oficial."),
         (6, 0.6,  "Responde a lo que de verdad importa: qué se puede hacer, con la cuenta hecha."),
         (7, 0.6,  "Y el vecino se lleva un informe con las fuentes que lo respaldan."),
-        (8, 0.6,  "Para vecinos, empresas, compradores y técnicos. En el centro, en el polígono o en el campo."),
-        (9, 0.6,  "Para el Ayuntamiento: menos consultas en el mostrador, más transparencia, y preparado para el nuevo planeamiento."),
-        (10, 0.5, "Su municipio, ahora en un clic." if m.lower() in ("su municipio", "tu municipio") else f"{M}, en un clic."),
+        (8, 0.6,  "Cualquier ciudadano puede usarlo: desde el móvil, sin cita y sin saber de urbanismo."),
+        (9, 0.6,  f"Para {m}: vecinos que resuelven solos sus dudas, menos consultas en el mostrador y más transparencia."),
+        (10, 0.5, ("Su municipio, ahora en un clic." if m.lower() in ("su municipio", "tu municipio") else f"{M}, en un clic.") + " Fácil para cualquier vecino."),
     ]
 
 # ------------------------------------------------------------------ voz
