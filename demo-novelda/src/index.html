@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Visor Urbanístico Novelda</title>
+<meta name="description" content="Demostración del visor urbanístico para el municipio de Novelda, por UrbanGPT.">
+<style>/*@@LEAFLET_CSS@@*/</style>
+<style>
+:root{
+  --bg:#f6f4ef; --panel:#ffffff; --ink:#1d2a30; --muted:#5b6b72; --line:#e3ded3;
+  --brand:#0f6e6e; --brand-ink:#ffffff; --brand-soft:#e2f0ee; --accent:#c0582f;
+  --ok:#2f7d4f; --warn:#b7791f; --pend:#6b7280; --pend-soft:#eef0f2;
+  --ej:#8a5a00; --ej-soft:#fff4d6; --real:#1f6f3d; --real-soft:#e3f4e8;
+  --shadow:0 10px 30px rgba(20,30,35,.12);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#12181b; --panel:#1b2428; --ink:#eef3f4; --muted:#a3b2b8; --line:#2c393e;
+  --brand:#3fb3a8; --brand-ink:#0c1a1a; --brand-soft:#173634; --accent:#e58a63;
+  --pend-soft:#263136; --ej:#f3c66b; --ej-soft:#3a2f14; --real:#7fd59d; --real-soft:#163322;
+  --shadow:0 10px 30px rgba(0,0,0,.4);
+}}
+:root[data-theme="dark"]{
+  --bg:#12181b; --panel:#1b2428; --ink:#eef3f4; --muted:#a3b2b8; --line:#2c393e;
+  --brand:#3fb3a8; --brand-ink:#0c1a1a; --brand-soft:#173634; --accent:#e58a63;
+  --pend-soft:#263136; --ej:#f3c66b; --ej-soft:#3a2f14; --real:#7fd59d; --real-soft:#163322;
+  --shadow:0 10px 30px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:17px;line-height:1.45}
+button{font:inherit;cursor:pointer}
+#app{display:grid;grid-template-rows:auto 1fr;height:100%}
+header{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line);z-index:5}
+.logo{width:36px;height:36px;border-radius:9px;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-weight:800}
+.htitle{font-weight:700;font-size:1.05rem}
+.hsub{font-size:.8rem;color:var(--muted)}
+.badge-demo{margin-left:auto;background:var(--ej-soft);color:var(--ej);border:1px solid currentColor;border-radius:999px;padding:4px 10px;font-size:.75rem;font-weight:700;white-space:nowrap}
+.hbtn{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:10px;padding:6px 10px;font-size:.85rem}
+main{position:relative;display:grid;grid-template-columns:minmax(340px,430px) 1fr;min-height:0}
+#panel{background:var(--panel);border-right:1px solid var(--line);overflow:auto;padding:20px;min-height:0}
+#map{min-height:0;background:#dfe7e4}
+.leaflet-container{font:inherit}
+h1{font-size:1.6rem;line-height:1.2;margin:.2em 0 .4em}
+h2{font-size:1.3rem;line-height:1.25;margin:.2em 0 .3em}
+p{margin:.4em 0 .8em}
+.muted{color:var(--muted)}
+.big{font-size:1.1rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:14px;padding:14px 20px;font-weight:700;font-size:1.05rem}
+.btn-primary{background:var(--brand);color:var(--brand-ink);box-shadow:var(--shadow)}
+.btn-ghost{background:transparent;color:var(--brand);border:2px solid var(--brand)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.btn-row .btn{flex:1 1 160px}
+.cards{display:grid;gap:12px;margin-top:12px}
+.card{display:flex;gap:14px;align-items:center;text-align:left;width:100%;background:var(--panel);color:var(--ink);border:2px solid var(--line);border-radius:16px;padding:14px;transition:border-color .15s, transform .15s}
+.card:hover,.card:focus-visible{border-color:var(--brand);transform:translateY(-1px);outline:none}
+.card .ico{font-size:1.9rem;width:52px;height:52px;display:grid;place-items:center;background:var(--brand-soft);border-radius:14px;flex:none}
+.card b{display:block;font-size:1.02rem}
+.card span{font-size:.86rem;color:var(--muted)}
+.steps{display:flex;gap:6px;margin:4px 0 14px}
+.steps i{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.steps i.on{background:var(--brand)}
+.qnum{display:inline-block;background:var(--brand);color:var(--brand-ink);border-radius:999px;font-weight:800;font-size:.8rem;padding:3px 10px;margin-bottom:6px}
+.answer{border-radius:16px;padding:16px;background:var(--brand-soft);margin:10px 0}
+.answer .t{font-size:1.25rem;font-weight:800;line-height:1.25}
+.tag{display:inline-block;font-size:.68rem;font-weight:800;letter-spacing:.03em;text-transform:uppercase;border-radius:6px;padding:2px 6px;vertical-align:middle;margin-left:6px}
+.tag.ejemplo{background:var(--ej-soft);color:var(--ej)}
+.tag.real{background:var(--real-soft);color:var(--real)}
+.tag.pendiente{background:var(--pend-soft);color:var(--pend)}
+.rows{display:grid;gap:8px;margin:10px 0}
+.row{display:flex;justify-content:space-between;gap:12px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.row .k{color:var(--muted);font-size:.92rem}
+.row .v{font-weight:700;text-align:right}
+.aff{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.dot{width:14px;height:14px;border-radius:50%;flex:none;background:var(--pend)}
+.aff .st{margin-left:auto;font-size:.8rem;font-weight:700;color:var(--pend)}
+.legend{display:grid;gap:6px;font-size:.84rem;margin:10px 0;padding:12px;border:1px dashed var(--line);border-radius:12px}
+.src{font-size:.82rem;color:var(--muted);border-left:3px solid var(--brand);padding:6px 10px;margin:12px 0;background:var(--bg);border-radius:0 8px 8px 0}
+.nav{display:flex;gap:10px;margin-top:18px;position:sticky;bottom:-20px;background:var(--panel);padding:12px 0 20px}
+.nav .btn{flex:1}
+.back{background:none;border:0;color:var(--muted);padding:4px 0;font-size:.9rem}
+.benefit{display:flex;gap:12px;align-items:flex-start;margin:10px 0}
+.benefit .ico{font-size:1.5rem}
+.toast{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:.9rem;z-index:800;box-shadow:var(--shadow);max-width:90%;text-align:center}
+.layers{position:absolute;top:12px;right:12px;z-index:700;display:flex;flex-direction:column;gap:6px}
+.layers button{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-weight:600;font-size:.88rem;box-shadow:var(--shadow);text-align:left}
+.layers button[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.pulse{width:26px;height:26px;border-radius:50%;background:var(--accent);border:4px solid #fff;box-shadow:0 0 0 0 rgba(192,88,47,.6);animation:pulse 1.8s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(192,88,47,.55)}70%{box-shadow:0 0 0 26px rgba(192,88,47,0)}100%{box-shadow:0 0 0 0 rgba(192,88,47,0)}}
+.pin-label{background:var(--panel);color:var(--ink);border-radius:10px;padding:4px 8px;font-weight:700;font-size:.8rem;box-shadow:var(--shadow);white-space:nowrap;border:1px solid var(--line)}
+/* Informe */
+#report{position:fixed;inset:0;background:rgba(10,15,18,.55);z-index:2000;display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 16px}
+#report.open{display:flex}
+.sheet{background:#fff;color:#1d2a30;max-width:760px;width:100%;border-radius:14px;padding:32px;position:relative;overflow:hidden}
+.sheet h3{margin:0 0 4px;font-size:1.4rem}
+.sheet table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem}
+.sheet td,.sheet th{border-bottom:1px solid #e5e1d8;padding:8px 6px;text-align:left;vertical-align:top}
+.sheet th{width:38%;color:#5b6b72;font-weight:600}
+.watermark{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;font-size:5.5rem;font-weight:900;color:rgba(192,88,47,.09);transform:rotate(-24deg);white-space:nowrap}
+.sheet .foot{font-size:.78rem;color:#5b6b72;margin-top:16px;border-top:1px solid #e5e1d8;padding-top:10px}
+.sheet-actions{display:flex;gap:10px;margin-top:18px}
+@media print{
+  body *{visibility:hidden}
+  #report,#report *{visibility:visible}
+  #report{position:absolute;inset:0;background:#fff;padding:0;display:block}
+  .sheet-actions{display:none}
+  .sheet{box-shadow:none;border-radius:0}
+}
+/* Móvil: mapa arriba, panel abajo */
+@media (max-width:820px){
+  html,body{font-size:16px}
+  main{grid-template-columns:1fr;grid-template-rows:42vh 1fr}
+  #map{grid-row:1}
+  #panel{grid-row:2;border-right:0;border-top:1px solid var(--line);padding:16px}
+  .hsub{display:none}
+  header{padding:8px 12px;gap:8px}
+  .logo{width:30px;height:30px}
+  .htitle{font-size:.92rem;line-height:1.2}
+  .badge-demo{font-size:.62rem;padding:3px 7px}
+  .hbtn{padding:5px 8px;font-size:.78rem}
+  .layers{top:8px;right:8px;gap:4px}
+  .layers button{padding:5px 8px;font-size:.76rem;border-radius:9px}
+  .leaflet-control-attribution{font-size:9px}
+  .toast{font-size:.78rem;bottom:28px}
+  .nav{bottom:-16px}
+  .nav .btn{font-size:.95rem;padding:12px 14px}
+  .btn-label-long{display:none}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="logo" aria-hidden="true">N</div>
+    <div>
+      <div class="htitle">Visor Urbanístico · Novelda</div>
+      <div class="hsub">Propuesta de UrbanGPT para el municipio</div>
+    </div>
+    <span class="badge-demo" title="Esta versión es una demostración">DEMOSTRACIÓN</span>
+    <button class="hbtn" id="homeBtn" type="button" aria-label="Volver al inicio">Inicio</button>
+  </header>
+  <main>
+    <section id="panel" aria-live="polite"></section>
+    <div id="map" role="application" aria-label="Mapa de Novelda"></div>
+  </main>
+</div>
+
+<div id="report" role="dialog" aria-modal="true" aria-label="Informe de ejemplo"></div>
+
+<script>/*@@LEAFLET_JS@@*/</script>
+<script>/*@@CASOS_JS@@*/</script>
+<script>
+(function(){
+"use strict";
+var D = window.NOVELDA_DEMO;
+var panel = document.getElementById("panel");
+var reportEl = document.getElementById("report");
+
+/* ---------- Mapa ---------- */
+var map = L.map("map",{zoomControl:true, attributionControl:true}).setView(D.centro, D.zoomInicial);
+var tileErrors = 0;
+var callejero = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+  maxZoom:19, attribution:"© OpenStreetMap"
+});
+var orto = L.tileLayer.wms("https://www.ign.es/wms-inspire/pnoa-ma",{
+  layers:"OI.OrthoimageCoverage", format:"image/jpeg", maxZoom:20, attribution:"PNOA © IGN"
+});
+var catastro = L.tileLayer.wms("https://ovc.catastro.meh.es/Cartografia/WMS/ServidorWMS.aspx",{
+  layers:"Catastro", format:"image/png", transparent:true, maxZoom:20, attribution:"© Dirección General del Catastro"
+});
+[callejero, orto, catastro].forEach(function(l){
+  l.on("tileerror",function(){ tileErrors++; if(tileErrors===6){ toast("Sin conexión con los mapas oficiales: la demostración sigue funcionando sin fondo."); } });
+});
+callejero.addTo(map);
+
+var layersBox = L.DomUtil.create("div","layers");
+layersBox.innerHTML =
+  '<button type="button" data-l="callejero" aria-pressed="true">🗺️ Callejero</button>'+
+  '<button type="button" data-l="orto" aria-pressed="false">🛰️ Foto aérea</button>'+
+  '<button type="button" data-l="catastro" aria-pressed="false">▦ Parcelas</button>';
+document.getElementById("map").appendChild(layersBox);
+L.DomEvent.disableClickPropagation(layersBox);
+layersBox.addEventListener("click",function(e){
+  var b = e.target.closest("button"); if(!b) return;
+  var k = b.getAttribute("data-l");
+  if(k==="catastro"){ toggle(catastro,b); return; }
+  var base = k==="orto" ? orto : callejero, other = k==="orto" ? callejero : orto;
+  map.removeLayer(other); base.addTo(map); base.bringToBack();
+  layersBox.querySelector('[data-l="callejero"]').setAttribute("aria-pressed", k==="callejero");
+  layersBox.querySelector('[data-l="orto"]').setAttribute("aria-pressed", k==="orto");
+});
+function toggle(layer,btn){
+  if(map.hasLayer(layer)){ map.removeLayer(layer); btn.setAttribute("aria-pressed","false"); }
+  else { layer.addTo(map); btn.setAttribute("aria-pressed","true"); }
+}
+function setBase(k){ var b = layersBox.querySelector('[data-l="'+k+'"]'); if(b && b.getAttribute("aria-pressed")!=="true") b.click(); }
+function setCatastro(on){ var b = layersBox.querySelector('[data-l="catastro"]'); if((b.getAttribute("aria-pressed")==="true")!==on) b.click(); }
+
+var pulseIcon = L.divIcon({className:"", html:'<div class="pulse"></div>', iconSize:[26,26], iconAnchor:[13,13]});
+var markers = {};
+D.casos.forEach(function(c){
+  var m = L.marker(c.coords,{icon:pulseIcon, title:c.lugar, keyboard:true}).addTo(map);
+  m.bindTooltip('<span class="pin-label">'+c.icono+" "+esc(c.lugar)+'</span>',{direction:"top",offset:[0,-14],opacity:1,className:"leaflet-tooltip-own"});
+  m.on("click",function(){ startCase(c.id); });
+  markers[c.id]=m;
+});
+
+/* Exploración libre: clic en el mapa */
+var freeMarker = null;
+map.on("click",function(e){
+  if(state.view!=="libre") return;
+  if(freeMarker) map.removeLayer(freeMarker);
+  freeMarker = L.marker(e.latlng,{icon:pulseIcon}).addTo(map);
+  renderLibre(e.latlng);
+});
+
+/* ---------- Estado y vistas ---------- */
+var state = {view:"inicio", caso:null, paso:0};
+var PASOS = ["¿Dónde está?","¿Qué tipo de suelo es?","¿Qué le afecta?","¿Qué se puede hacer?","Informe para descargar"];
+
+function esc(s){ return String(s).replace(/[&<>"']/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch];}); }
+function tag(t){
+  var txt = t==="real" ? "Dato real" : t==="pendiente" ? "Pendiente" : "Ejemplo";
+  return '<span class="tag '+t+'">'+txt+'</span>';
+}
+function caso(id){ for(var i=0;i<D.casos.length;i++) if(D.casos[i].id===id) return D.casos[i]; return null; }
+function toast(msg){
+  var t = document.createElement("div"); t.className="toast"; t.textContent=msg;
+  document.getElementById("map").appendChild(t);
+  setTimeout(function(){ t.remove(); }, 4200);
+}
+function scrollTop(){ panel.scrollTop = 0; }
+
+function renderInicio(){
+  state = {view:"inicio", caso:null, paso:0};
+  map.flyTo(D.centro, D.zoomInicial, {duration:1});
+  setCatastro(false);
+  panel.innerHTML =
+    '<span class="qnum">Bienvenida</span>'+
+    '<h1>Toda la información urbanística de Novelda, en un clic</h1>'+
+    '<p class="big">Cualquier vecino, empresa o técnico podrá saber <b>qué puede hacer en su parcela</b>, sin desplazarse al Ayuntamiento y con el documento oficial que lo respalda.</p>'+
+    '<div class="btn-row"><button class="btn btn-primary" id="goTour" type="button">▶ Empezar la demostración</button></div>'+
+    '<p class="muted" style="margin-top:18px">O elija directamente un ejemplo:</p>'+
+    '<div class="cards">'+ D.casos.map(function(c){
+      return '<button class="card" type="button" data-caso="'+c.id+'"><span class="ico">'+c.icono+'</span><span><b>'+esc(c.titulo)+'</b><span>'+esc(c.persona)+'</span></span></button>';
+    }).join("") +'</div>'+
+    '<div class="btn-row"><button class="btn btn-ghost" id="goLibre" type="button">🔍 Explorar el mapa libremente</button></div>';
+  document.getElementById("goTour").onclick = function(){ startCase(D.casos[0].id); };
+  document.getElementById("goLibre").onclick = renderLibre0;
+  panel.querySelectorAll("[data-caso]").forEach(function(b){ b.onclick=function(){ startCase(b.getAttribute("data-caso")); }; });
+  scrollTop();
+}
+
+function startCase(id){ state = {view:"caso", caso:id, paso:0}; renderPaso(); }
+
+function renderPaso(){
+  var c = caso(state.caso), p = state.paso;
+  var stepsHtml = '<div class="steps" aria-hidden="true">'+PASOS.map(function(_,i){return '<i class="'+(i<=p?"on":"")+'"></i>';}).join("")+'</div>';
+  var head = '<button class="back" type="button" id="toInicio">← Todos los ejemplos</button>'+stepsHtml+
+             '<span class="qnum">Paso '+(p+1)+' de '+PASOS.length+'</span>';
+  var body = "";
+  if(p===0){
+    map.flyTo(c.coords, c.zoom, {duration:1.4});
+    setBase("callejero"); setCatastro(false);
+    body = '<h2>'+c.icono+' '+esc(c.titulo)+'</h2>'+
+      '<p class="muted">'+esc(c.persona)+'</p>'+
+      '<div class="answer"><div class="muted" style="font-size:.85rem">'+esc(PASOS[0])+'</div><div class="t">'+esc(c.lugar)+tag("real")+'</div></div>'+
+      '<p>El vecino solo tiene que <b>escribir su dirección o su referencia catastral</b>, o tocar su parcela en el mapa. El visor la localiza al instante.</p>'+
+      '<div class="src">Ubicación: '+esc(c.fuenteLugar)+'.</div>';
+  } else if(p===1){
+    setBase("orto"); setCatastro(true);
+    map.flyTo(c.coords, Math.min(c.zoom+1,19), {duration:1});
+    body = '<h2>'+esc(PASOS[1])+'</h2>'+
+      '<div class="answer"><div class="t">'+esc(c.suelo.titular)+tag(c.suelo.tipo)+'</div><p style="margin:.5em 0 0">'+esc(c.suelo.explicacion)+'</p></div>'+
+      '<p>Explicado <b>en lenguaje claro</b>, sin tecnicismos. Ahora mismo el mapa muestra la <b>foto aérea</b> con las <b>parcelas del Catastro</b> encima.</p>'+
+      '<div class="src">En el visor definitivo, este dato sale de las <b>'+esc(D.instrumento.nombre)+'</b> ('+esc(D.instrumento.detalle)+')'+tag("real")+'</div>';
+  } else if(p===2){
+    body = '<h2>'+esc(PASOS[2])+'</h2>'+
+      '<p>El visor revisa las protecciones y riesgos que pueden limitar lo que se hace en la parcela.</p>'+
+      '<div class="rows">'+c.afecciones.map(function(a){
+        return '<div class="aff"><span class="dot"></span><span>'+esc(a.nombre)+'</span><span class="st">Pendiente de comprobar</span></div>';
+      }).join("")+'</div>'+
+      '<div class="legend"><b>Cómo se verá en el visor final</b>'+
+        '<div><span class="dot" style="display:inline-block;background:var(--accent);vertical-align:middle"></span> Le afecta — con el plano y el documento</div>'+
+        '<div><span class="dot" style="display:inline-block;background:var(--ok);vertical-align:middle"></span> No le afecta — solo si se ha comprobado con la fuente oficial</div>'+
+        '<div><span class="dot" style="display:inline-block;vertical-align:middle"></span> Pendiente — nunca se da por bueno sin comprobar</div>'+
+      '</div>'+
+      '<p class="muted">Garantía del sistema: <b>jamás se dice “no le afecta” si no se ha comprobado</b>.</p>';
+  } else if(p===3){
+    body = '<h2>'+esc(PASOS[3])+'</h2>'+
+      '<p>Lo que de verdad le interesa al vecino, respondido de forma directa:</p>'+
+      '<div class="rows">'+c.puede.map(function(r){
+        return '<div class="row"><span class="k">'+esc(r.texto)+'</span><span class="v">'+esc(r.valor)+tag(r.tipo)+'</span></div>';
+      }).join("")+'</div>'+
+      '<div class="answer"><div class="muted" style="font-size:.85rem">Trámite orientativo</div><div style="font-weight:700">'+esc(c.tramite)+tag("ejemplo")+'</div></div>'+
+      '<div class="src">Los valores marcados como <b>Ejemplo</b> sirven para enseñar el formato. En el visor contratado se cargarán desde la normativa de Novelda, citando el artículo exacto.</div>';
+  } else {
+    body = '<h2>'+esc(PASOS[4])+'</h2>'+
+      '<p class="big">Con un clic, el vecino descarga un <b>informe en PDF</b> con todo lo anterior y las fuentes que lo respaldan.</p>'+
+      '<div class="btn-row"><button class="btn btn-primary" type="button" id="openReport">📄 Ver el informe de ejemplo</button></div>'+
+      '<p class="muted" style="margin-top:14px">El informe es orientativo: no sustituye a la cédula urbanística, la licencia ni los certificados municipales.</p>';
+  }
+  var isLast = p===PASOS.length-1;
+  var idx = D.casos.findIndex(function(x){return x.id===c.id;});
+  var nextCase = D.casos[idx+1];
+  var nav = '<div class="nav">'+
+    (p>0 ? '<button class="btn btn-ghost" type="button" id="prev">← Atrás</button>' : '')+
+    (!isLast ? '<button class="btn btn-primary" type="button" id="next">Siguiente<span class="btn-label-long">: '+esc(PASOS[p+1])+'</span> →</button>'
+             : (nextCase ? '<button class="btn btn-primary" type="button" id="nextCase">Siguiente ejemplo '+nextCase.icono+' →</button>'
+                         : '<button class="btn btn-primary" type="button" id="toFin">Ver resumen final ✓</button>'))+
+    '</div>';
+  panel.innerHTML = head + body + nav;
+  document.getElementById("toInicio").onclick = renderInicio;
+  var el;
+  if((el=document.getElementById("prev"))) el.onclick=function(){ state.paso--; renderPaso(); };
+  if((el=document.getElementById("next"))) el.onclick=function(){ state.paso++; renderPaso(); };
+  if((el=document.getElementById("nextCase"))) el.onclick=function(){ startCase(nextCase.id); };
+  if((el=document.getElementById("toFin"))) el.onclick=renderFin;
+  if((el=document.getElementById("openReport"))) el.onclick=function(){ openReport(c); };
+  scrollTop();
+}
+
+function renderFin(){
+  state = {view:"fin", caso:null, paso:0};
+  map.flyTo(D.centro, D.zoomInicial, {duration:1.2}); setCatastro(false); setBase("callejero");
+  panel.innerHTML =
+    '<button class="back" type="button" id="toInicio">← Volver al inicio</button>'+
+    '<span class="qnum">Resumen</span>'+
+    '<h1>¿Qué gana el Ayuntamiento de Novelda?</h1>'+
+    benefit("⏱️","Menos consultas en el mostrador","Las preguntas repetidas (“¿qué puedo hacer en mi casa?”) se responden solas, 24 horas al día.")+
+    benefit("🤝","Más transparencia","Cada respuesta enseña de qué documento oficial sale. El vecino confía y el técnico municipal lo puede revisar.")+
+    benefit("🧭","Fácil para cualquiera","Pensado para vecinos sin conocimientos técnicos: preguntas sencillas, respuestas claras, en el móvil o en el ordenador.")+
+    benefit("🛡️","Sin sorpresas","Si un dato no está comprobado, el visor lo dice. Nunca inventa ni da por hecho lo que no consta.")+
+    benefit("🔄","Preparado para el nuevo Plan General","Muestra el planeamiento vigente y, aparte, el que esté en tramitación, para que nadie los confunda.")+
+    '<div class="src">'+esc(D.instrumento.nota)+'</div>'+
+    '<div class="btn-row"><button class="btn btn-primary" type="button" id="again">↺ Repetir la demostración</button></div>';
+  document.getElementById("toInicio").onclick = renderInicio;
+  document.getElementById("again").onclick = function(){ startCase(D.casos[0].id); };
+  scrollTop();
+}
+function benefit(i,t,d){ return '<div class="benefit"><span class="ico">'+i+'</span><div><b>'+t+'</b><div class="muted">'+d+'</div></div></div>'; }
+
+function renderLibre0(){
+  state = {view:"libre", caso:null, paso:0};
+  setBase("orto"); setCatastro(true);
+  panel.innerHTML =
+    '<button class="back" type="button" id="toInicio">← Volver al inicio</button>'+
+    '<span class="qnum">Exploración libre</span>'+
+    '<h2>Toque cualquier punto del mapa</h2>'+
+    '<p>Acerque el mapa y toque una parcela. En el visor final aparecerá toda su información urbanística.</p>'+
+    '<p class="muted">Consejo: pulse <b>▦ Parcelas</b> para ver las parcelas catastrales sobre la foto aérea.</p>';
+  document.getElementById("toInicio").onclick = function(){ if(freeMarker){map.removeLayer(freeMarker);freeMarker=null;} renderInicio(); };
+}
+
+function renderLibre(latlng){
+  var lat = latlng.lat.toFixed(5), lng = latlng.lng.toFixed(5);
+  panel.innerHTML =
+    '<button class="back" type="button" id="toInicio">← Volver al inicio</button>'+
+    '<span class="qnum">Exploración libre</span>'+
+    '<h2>Punto seleccionado</h2>'+
+    '<div class="rows"><div class="row"><span class="k">Coordenadas</span><span class="v">'+lat+', '+lng+tag("real")+'</span></div>'+
+    '<div class="row"><span class="k">Referencia catastral</span><span class="v" id="rc">Consultando al Catastro…</span></div>'+
+    '<div class="row"><span class="k">Dirección catastral</span><span class="v" id="dir">—</span></div>'+
+    '<div class="row"><span class="k">Tipo de suelo</span><span class="v">Disponible en el visor final'+tag("pendiente")+'</span></div>'+
+    '<div class="row"><span class="k">Afecciones</span><span class="v">Disponible en el visor final'+tag("pendiente")+'</span></div></div>'+
+    '<p class="muted">La referencia catastral se consulta en directo a la Sede Electrónica del Catastro.</p>';
+  document.getElementById("toInicio").onclick = function(){ if(freeMarker){map.removeLayer(freeMarker);freeMarker=null;} renderInicio(); };
+  consultaCatastro(latlng.lat, latlng.lng);
+}
+
+function consultaCatastro(lat,lng){
+  var url = "https://ovc.catastro.meh.es/OVCServWeb/OVCWcfCallejero/COVCCoordenadas.svc/json/Consulta_RCCOOR?SRS=EPSG:4326&Coordenada_X="+lng+"&Coordenada_Y="+lat;
+  var rcEl = document.getElementById("rc"), dirEl = document.getElementById("dir");
+  var ctrl = ("AbortController" in window) ? new AbortController() : null;
+  var timer = setTimeout(function(){ if(ctrl) ctrl.abort(); }, 8000);
+  fetch(url, ctrl ? {signal:ctrl.signal} : {}).then(function(r){ return r.json(); }).then(function(j){
+    clearTimeout(timer);
+    var res = j && (j.Consulta_RCCOORResult || j.consulta_rccoorResult || j);
+    var coord = res && res.coordenadas && res.coordenadas.coord;
+    if(Array.isArray(coord)) coord = coord[0];
+    if(!coord || !coord.pc){ if(document.body.contains(rcEl)){ rcEl.innerHTML = "Sin parcela catastral en este punto"+tag("real"); } return; }
+    if(document.body.contains(rcEl)){
+      rcEl.innerHTML = esc((coord.pc.pc1||"")+(coord.pc.pc2||""))+tag("real");
+      dirEl.innerHTML = coord.ldt ? esc(coord.ldt)+tag("real") : "—";
+    }
+  }).catch(function(){
+    clearTimeout(timer);
+    if(document.body.contains(rcEl)) rcEl.innerHTML = "Consulta en directo no disponible ahora"+tag("pendiente");
+  });
+}
+
+/* ---------- Informe de ejemplo ---------- */
+function openReport(c){
+  var hoy = new Date().toLocaleDateString("es-ES");
+  reportEl.innerHTML =
+    '<div class="sheet"><div class="watermark">EJEMPLO</div>'+
+    '<div style="font-size:.8rem;color:#5b6b72">UrbanGPT · Visor Urbanístico de Novelda · Informe orientativo</div>'+
+    '<h3>Informe urbanístico de la parcela</h3>'+
+    '<div style="color:#5b6b72">'+esc(c.lugar)+' · generado el '+hoy+'</div>'+
+    '<table>'+
+      '<tr><th>Ubicación</th><td>'+esc(c.lugar)+' ('+c.coords[0].toFixed(5)+', '+c.coords[1].toFixed(5)+')<br><small>Fuente: '+esc(c.fuenteLugar)+'</small></td></tr>'+
+      '<tr><th>Tipo de suelo</th><td>'+esc(c.suelo.titular)+' <small>[valor de ejemplo]</small></td></tr>'+
+      c.puede.map(function(r){ return '<tr><th>'+esc(r.texto)+'</th><td>'+esc(r.valor)+' <small>[valor de ejemplo]</small></td></tr>'; }).join("")+
+      '<tr><th>Afecciones</th><td>'+c.afecciones.map(function(a){return esc(a.nombre)+": pendiente de comprobar";}).join("<br>")+'</td></tr>'+
+      '<tr><th>Trámite orientativo</th><td>'+esc(c.tramite)+' <small>[valor de ejemplo]</small></td></tr>'+
+      '<tr><th>Planeamiento de referencia</th><td>'+esc(D.instrumento.nombre)+'. '+esc(D.instrumento.detalle)+'</td></tr>'+
+    '</table>'+
+    '<div class="foot"><b>DOCUMENTO DE DEMOSTRACIÓN — SIN VALIDEZ.</b> Los valores marcados como ejemplo no proceden del planeamiento de Novelda. '+
+    'En el servicio contratado, cada dato incluirá su documento de origen, artículo y fecha. '+
+    'El informe es orientativo y no sustituye a la cédula urbanística, la licencia ni los certificados municipales.</div>'+
+    '<div class="sheet-actions"><button class="btn btn-primary" type="button" id="printR">🖨️ Imprimir / Guardar PDF</button>'+
+    '<button class="btn btn-ghost" type="button" id="closeR">Cerrar</button></div></div>';
+  reportEl.classList.add("open");
+  document.getElementById("printR").onclick = function(){ window.print(); };
+  document.getElementById("closeR").onclick = closeReport;
+  document.getElementById("closeR").focus();
+}
+function closeReport(){ reportEl.classList.remove("open"); }
+reportEl.addEventListener("click",function(e){ if(e.target===reportEl) closeReport(); });
+document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeReport(); });
+
+document.getElementById("homeBtn").onclick = function(){ closeReport(); renderInicio(); };
+renderInicio();
+})();
+</script>
+</body>
+</html>
