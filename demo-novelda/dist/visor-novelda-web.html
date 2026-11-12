@@ -703,7 +703,8 @@ header{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var
 .htitle{font-family:var(--f-head);font-weight:700;font-size:1.05rem;line-height:1.2}
 .hsub{font-size:.78rem;color:var(--muted)}
 .badge-demo{margin-left:auto;background:var(--ej-soft);color:var(--ej);border:1px solid currentColor;border-radius:999px;padding:4px 10px;font-size:.72rem;font-weight:800;letter-spacing:.04em;white-space:nowrap}
-.hbtn{border:1px solid var(--line);background:transparent;border-radius:10px;padding:6px 10px;font-size:.85rem}
+.hbtn{border:1px solid var(--line);background:transparent;border-radius:10px;padding:6px 10px;font-size:.85rem;white-space:nowrap}
+.short{display:none}
 main{position:relative;display:grid;grid-template-columns:minmax(360px,460px) 1fr;min-height:0}
 #panel{background:var(--panel);border-right:1px solid var(--line);overflow:auto;padding:20px;min-height:0}
 #map{min-height:0;background:var(--map-bg)}
@@ -752,6 +753,28 @@ details.item>summary .v{font-weight:700;text-align:right;min-width:0}
 .sugg button:hover,.sugg button:focus-visible{background:var(--brand-soft)}
 .sugg small{display:block;color:var(--muted)}
 .hint{font-size:.8rem;color:var(--muted)}
+.guia{display:flex;gap:10px;align-items:flex-start;background:var(--ej-soft);color:var(--ink);border-radius:14px;padding:12px 14px;margin:10px 0;font-size:.92rem}
+.guia .gi{font-size:1.2rem;line-height:1.2;flex:none}
+.guia b{display:block;margin-bottom:2px}
+.ayto{border:1px solid var(--brand);border-radius:14px;padding:12px 14px;margin:12px 0;font-size:.92rem}
+.ayto .eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;font-weight:800;color:var(--brand)}
+.casen{font-size:.8rem;color:var(--muted);margin-left:8px;font-weight:600}
+.resume{display:flex;gap:10px;align-items:center;width:100%;text-align:left;border:2px dashed var(--brand);background:var(--brand-soft);border-radius:14px;padding:12px 14px;margin:12px 0;font-weight:700}
+details.item.tocar>summary{animation:ring 1.6s ease-in-out 3;border-radius:12px}
+@keyframes ring{0%,100%{box-shadow:0 0 0 0 transparent}50%{box-shadow:0 0 0 4px var(--accent)}}
+@media (prefers-reduced-motion: reduce){details.item.tocar>summary{animation:none;box-shadow:0 0 0 3px var(--accent)}}
+.tocar-lbl{display:inline-block;background:var(--accent);color:#fff;font-size:.72rem;font-weight:800;border-radius:6px;padding:2px 7px;margin:0 0 6px}
+#intro{position:fixed;inset:0;z-index:3000;background:rgba(8,10,10,.62);display:flex;align-items:center;justify-content:center;padding:16px}
+#intro[hidden]{display:none}
+.intro-card{background:var(--panel);color:var(--ink);border-radius:20px;max-width:520px;width:100%;padding:26px 24px 20px;box-shadow:var(--shadow);max-height:92vh;overflow:auto}
+.intro-card .big-ico{font-size:2.4rem;line-height:1}
+.intro-card h2{font-size:1.5rem;margin-top:.4em}
+.intro-dots{display:flex;gap:6px;justify-content:center;margin:14px 0 4px}
+.intro-dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.intro-dots i.on{background:var(--brand);width:22px;border-radius:4px}
+.intro-actions{display:flex;gap:10px;margin-top:14px}
+.intro-actions .btn{flex:1}
+.skip{background:none;border:0;color:var(--muted);font-size:.86rem;padding:8px;display:block;margin:6px auto 0}
 details.item>summary::after{content:"ⓘ";color:var(--brand);font-size:.9rem;flex:none}
 details.item[open]>summary::after{content:"✕"}
 details.item .more{padding:0 12px 12px;font-size:.88rem;color:var(--muted);display:grid;gap:6px}
@@ -824,6 +847,7 @@ details.item .more b{color:var(--ink)}
   .nav{bottom:-16px}
   .nav .btn{font-size:.95rem;padding:12px 14px}
   .long{display:none}
+  .short{display:inline}
   .sheet{padding:18px}
 }
 </style>
@@ -835,7 +859,8 @@ details.item .more b{color:var(--ink)}
       <div class="htitle">Visor Urbanístico · Novelda</div>
       <div class="hsub">UrbanGPT · PeritiaUrbana — propuesta para el Ayuntamiento</div>
     </div>
-    <span class="badge-demo" title="Versión de demostración con datos de ejemplo">DEMOSTRACIÓN</span>
+    <span class="badge-demo" title="Versión de demostración con datos de ejemplo"><span class="long">DEMOSTRACIÓN</span><span class="short">DEMO</span></span>
+    <button class="hbtn" id="helpBtn" type="button" aria-label="Ayuda: cómo usar la demostración">? Ayuda</button>
     <button class="hbtn" id="homeBtn" type="button">Inicio</button>
   </header>
   <main>
@@ -844,6 +869,7 @@ details.item .more b{color:var(--ink)}
   </main>
 </div>
 <div id="report" role="dialog" aria-modal="true" aria-label="Informe de ejemplo" hidden></div>
+<div id="intro" role="dialog" aria-modal="true" aria-label="Bienvenida" hidden></div>
 
 <script>/* @preserve
  * Leaflet 1.9.4, a JS library for interactive maps. https://leafletjs.com
@@ -876,6 +902,7 @@ details.item .more b{color:var(--ink)}
  */
 window.NOVELDA_DEMO = {
   municipio: "Novelda",
+  contacto: "Para cualquier duda, su contacto en UrbanGPT · PeritiaUrbana le atenderá.",
   centro: [38.3872, -0.7720],
   zoomInicial: 14,
   instrumento: {
@@ -909,6 +936,7 @@ window.NOVELDA_DEMO = {
     /* ------------------------------------------------------------------ */
     {
       id: "centro",
+      paraAyto: "Hoy esta pregunta llega al mostrador o por teléfono. Con el visor, la vecina tiene la respuesta en un minuto y llega a la licencia sabiendo qué pedir.",
       icono: "🏠",
       titulo: "Quiero reformar mi casa en el centro",
       persona: "Una vecina con una vivienda de dos plantas junto a la Plaça d'Espanya",
@@ -965,6 +993,7 @@ window.NOVELDA_DEMO = {
     /* ------------------------------------------------------------------ */
     {
       id: "industrial",
+      paraAyto: "Una empresa que sabe en minutos cuánto puede crecer decide antes de invertir. Es una herramienta para atraer y retener actividad económica.",
       icono: "🏭",
       titulo: "Mi empresa quiere ampliar la nave",
       persona: "Un empresario con una nave de 600 m² en el Polígono industrial Santa Fe",
@@ -1021,6 +1050,7 @@ window.NOVELDA_DEMO = {
     /* ------------------------------------------------------------------ */
     {
       id: "patrimonio",
+      paraAyto: "El comprador conoce la protección antes de comprar. Se evitan conflictos posteriores y se protege mejor el patrimonio del municipio.",
       icono: "🏛️",
       titulo: "¿Este edificio está protegido?",
       persona: "Una persona interesada en un edificio modernista de la calle Major",
@@ -1075,6 +1105,7 @@ window.NOVELDA_DEMO = {
     /* ------------------------------------------------------------------ */
     {
       id: "rural",
+      paraAyto: "Se acaban las falsas expectativas en suelo rural. La respuesta es clara desde el principio y se evitan expedientes y obras sin licencia.",
       icono: "🌳",
       titulo: "¿Puedo construir en el campo?",
       persona: "Una familia con un terreno de 15.000 m² cerca del Santuario de la Magdalena",
@@ -1130,6 +1161,7 @@ window.NOVELDA_DEMO = {
     /* ------------------------------------------------------------------ */
     {
       id: "urbanizable",
+      paraAyto: "El vecino entiende por qué todavía no puede construir. Es una llamada menos al Ayuntamiento y más confianza en el proceso.",
       icono: "🏗️",
       titulo: "He comprado en una zona nueva: ¿cuándo puedo construir?",
       persona: "Un matrimonio que ha comprado una parcela en un sector residencial en obras",
@@ -1345,6 +1377,7 @@ function renderInicio(){
     '<span class="qnum">Bienvenida</span>'+
     '<h1>La información urbanística de Novelda, clara y en un clic</h1>'+
     '<p class="big">Cualquier vecino, empresa o técnico puede saber <b>qué puede hacer en su parcela</b> sin ir al Ayuntamiento, con el documento oficial que lo respalda.</p>'+
+    resumeHtml()+
     '<label for="q" class="hint">Pruebe a buscar, como haría un vecino:</label>'+
     '<div class="search"><input id="q" type="search" autocomplete="off" placeholder="Dirección o referencia catastral"><div class="sugg" id="sugg" hidden></div></div>'+
     '<div class="hint">Ejemplos: «calle Major», «polígono», «Magdalena»</div>'+
@@ -1353,6 +1386,7 @@ function renderInicio(){
     '<div class="cards">'+ D.casos.map(function(c){
       return '<button class="card" type="button" data-caso="'+c.id+'"><span class="ico" aria-hidden="true">'+c.icono+'</span><span><b>'+esc(c.titulo)+'</b><span>'+esc(c.persona)+'</span></span></button>';
     }).join("") +'</div>'+
+    '<p class="hint" style="margin-top:10px">También puede tocar los puntos naranjas del mapa.</p>'+
     '<div class="btn-row"><button class="btn btn-ghost" id="goLibre" type="button">Explorar el mapa libremente</button></div>'+
     '<div class="legend"><b>Cómo leer esta demostración</b>'+
       '<div>'+tagReal()+' dato comprobado, con su fuente.</div>'+
@@ -1361,10 +1395,16 @@ function renderInicio(){
   document.getElementById("goTour").onclick = function(){ startCase(D.casos[0].id); };
   document.getElementById("goLibre").onclick = renderLibre0;
   initBuscador();
+  bindBack("goResume", function(){ var g = MEM.get("progreso"); state = {view:"caso", caso:g.caso, paso:g.paso}; renderPaso(); });
   panel.querySelectorAll("[data-caso]").forEach(function(b){ b.onclick=function(){ startCase(b.getAttribute("data-caso")); }; });
   scrollTop();
 }
 
+function resumeHtml(){
+  var g = MEM.get("progreso"), c = g && caso(g.caso);
+  if(!c || typeof g.paso!=="number" || g.paso<0 || g.paso>=PASOS.length) return "";
+  return '<button class="resume" type="button" id="goResume"><span aria-hidden="true">↩</span><span>Continuar donde lo dejó<br><small class="muted" style="font-weight:500">'+c.icono+' '+esc(c.titulo)+' · paso '+(g.paso+1)+' de '+PASOS.length+'</small></span></button>';
+}
 function norm(t){ return String(t).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
 function initBuscador(){
   var q = document.getElementById("q"), box = document.getElementById("sugg");
@@ -1383,13 +1423,57 @@ function initBuscador(){
 
 function startCase(id){ state = {view:"caso", caso:id, paso:0}; renderPaso(); }
 
+/* ---- Autoguiado: textos que acompañan a la concejal sin necesidad de explicación ---- */
+var GUIA = [
+  {t:"Así empieza cualquier vecino", d:"Busca su calle o toca su parcela en el mapa. En el mapa verá el lugar señalado. Toque los datos de la parcela para ver qué significa cada uno."},
+  {t:"La primera pregunta: ¿qué es mi terreno?", d:"El visor lo dice sin tecnicismos. El mapa cambia a foto aérea con las parcelas. Toque «Clase de suelo» para ver la explicación."},
+  {t:"Lo que puede limitar lo que se hace", d:"Rojo: le afecta. Verde: no le afecta. Toque cada línea para ver el porqué."},
+  {t:"La respuesta que busca el vecino", d:"Preguntas reales con respuestas directas: sí, no o con condiciones. Debajo, la cuenta hecha paso a paso y las normas que se aplican."},
+  {t:"Todo en un documento", d:"El vecino se lleva un informe con las fuentes. Pulse el botón para verlo."}
+];
+function guiaHtml(p){ var g = GUIA[p]; return '<div class="guia"><span class="gi" aria-hidden="true">💡</span><div><b>'+esc(g.t)+'</b>'+esc(g.d)+'</div></div>'; }
+var MEM = { get:function(k){ try{ return JSON.parse(localStorage.getItem("novelda_demo_"+k)); }catch(e){ return null; } },
+            set:function(k,v){ try{ localStorage.setItem("novelda_demo_"+k, JSON.stringify(v)); }catch(e){} } };
+var tocado = MEM.get("tocado") === true;
+panel.addEventListener("toggle", function(e){ if(e.target.matches && e.target.matches("details.item") && e.target.open && !tocado){ tocado = true; MEM.set("tocado", true); panel.querySelectorAll(".tocar").forEach(function(x){ x.classList.remove("tocar"); }); var l = panel.querySelector(".tocar-lbl"); if(l) l.remove(); } }, true);
+function marcarPrimerDato(){
+  if(tocado) return;
+  var d = panel.querySelector("details.item"); if(!d) return;
+  d.classList.add("tocar");
+  d.insertAdjacentHTML("beforebegin", '<span class="tocar-lbl">Toque aquí ↓</span>');
+}
+
+var INTRO = [
+  {i:"👋", t:"Bienvenida", d:"Esto es una demostración del <b>visor urbanístico</b> que proponemos para Novelda. Le llevará unos 5 minutos y no necesita conocimientos técnicos."},
+  {i:"🗺️", t:"Qué hace el visor", d:"Cualquier vecino escribe su dirección y descubre, <b>en lenguaje claro</b>, qué tipo de suelo tiene, qué le afecta y qué puede hacer en su parcela, con el documento oficial que lo respalda."},
+  {i:"🏷️", t:"Datos de ejemplo", d:"Los lugares son reales, pero los <b>valores urbanísticos son de ejemplo</b> y llevan la etiqueta <span class=\"tag ejemplo\">Ejemplo</span>. En el visor definitivo saldrán de las Normas Subsidiarias de Novelda."},
+  {i:"👉", t:"Cómo moverse", d:"Pulse <b>Siguiente</b> para avanzar. El recuadro amarillo 💡 le explica cada pantalla. Puede tocar cualquier dato para saber más. Si se pierde, pulse <b>? Ayuda</b> o <b>Inicio</b> arriba."}
+];
+var introPaso = 0, introEl = document.getElementById("intro");
+function abrirIntro(){ introPaso = 0; pintaIntro(); introEl.hidden = false; }
+function cerrarIntro(empezar){ introEl.hidden = true; MEM.set("intro", true); if(empezar) startCase(D.casos[0].id); }
+function pintaIntro(){
+  var it = INTRO[introPaso], last = introPaso === INTRO.length-1;
+  introEl.innerHTML = '<div class="intro-card"><div class="big-ico" aria-hidden="true">'+it.i+'</div><h2>'+it.t+'</h2><p class="big">'+it.d+'</p>'+
+    '<div class="intro-dots" aria-hidden="true">'+INTRO.map(function(_,i){ return '<i class="'+(i===introPaso?"on":"")+'"></i>'; }).join("")+'</div>'+
+    '<div class="intro-actions">'+(introPaso>0?'<button class="btn btn-ghost" type="button" id="iPrev">← Atrás</button>':'')+
+    (last ? '<button class="btn btn-primary" type="button" id="iGo">▶ Empezar el recorrido</button>' : '<button class="btn btn-primary" type="button" id="iNext">Siguiente →</button>')+'</div>'+
+    (last ? '<button class="skip" type="button" id="iSkip">Prefiero explorar por mi cuenta</button>' : '<button class="skip" type="button" id="iSkip">Saltar la introducción</button>')+'</div>';
+  bindBack("iPrev", function(){ introPaso--; pintaIntro(); });
+  bindBack("iNext", function(){ introPaso++; pintaIntro(); });
+  bindBack("iGo", function(){ cerrarIntro(true); });
+  bindBack("iSkip", function(){ cerrarIntro(false); });
+  var f = introEl.querySelector("#iNext,#iGo"); if(f) f.focus();
+}
+document.getElementById("helpBtn").onclick = function(){ closeReport(); abrirIntro(); };
+
 function renderPaso(){
   var c = caso(state.caso), p = state.paso;
   var steps = '<div class="steps" role="tablist" aria-label="Pasos">'+PASOS.map(function(t,i){
     return '<button type="button" role="tab" aria-label="'+esc(t)+'" aria-selected="'+(i===p)+'" class="'+(i<=p?"on":"")+'" data-paso="'+i+'"></button>';
   }).join("")+'</div>';
   var head = '<button class="back" type="button" id="toInicio">← Todos los ejemplos</button>'+steps+
-             '<span class="qnum">'+c.icono+' Paso '+(p+1)+' de '+PASOS.length+' · '+esc(PASOS[p])+'</span>';
+             '<span class="qnum">'+c.icono+' Paso '+(p+1)+' de '+PASOS.length+' · '+esc(PASOS[p])+'</span><span class="casen">Ejemplo '+(D.casos.indexOf(c)+1)+' de '+D.casos.length+'</span>'+guiaHtml(p);
   var body = "";
   if(p===0){
     mostrarContorno(c.id); setBase("callejero"); setCatastro(false); irA(c.coords, c.zoom);
@@ -1430,7 +1514,8 @@ function renderPaso(){
            : (nextCase ? '<button class="btn btn-primary" type="button" id="nextCase">Siguiente ejemplo '+nextCase.icono+'</button>'
                        : '<button class="btn btn-primary" type="button" id="toFin">Ver resumen ✓</button>'))+
     '</div>';
-  var ficha = '<button class="linkbtn" type="button" id="verFicha">Ver la ficha completa de este ejemplo</button>';
+  var ayto = p===3 ? '<div class="ayto"><div class="eyebrow">Por qué le importa al Ayuntamiento</div>'+esc(c.paraAyto)+'</div>' : '';
+  var ficha = ayto + '<button class="linkbtn" type="button" id="verFicha">Ver la ficha completa de este ejemplo</button>';
   panel.innerHTML = head + body + ficha + nav;
   bindBack("toInicio", renderInicio);
   panel.querySelectorAll("[data-paso]").forEach(function(b){ b.onclick=function(){ state.paso=+b.getAttribute("data-paso"); renderPaso(); }; });
@@ -1440,6 +1525,8 @@ function renderPaso(){
   bindBack("toFin", renderFin);
   bindBack("openReport", function(){ openReport(c); });
   bindBack("verFicha", function(){ openReport(c); });
+  MEM.set("progreso", {caso:c.id, paso:p});
+  marcarPrimerDato();
   scrollTop();
 }
 
@@ -1458,9 +1545,12 @@ function renderFin(){
     '<div class="answer"><div class="eyebrow">Ya en funcionamiento</div><div class="t2">El mismo sistema ya da servicio en Elche: informe por referencia catastral, con clasificación del suelo, planeamiento y 19 afecciones sectoriales.</div>'+
     '<p style="margin:.5em 0 0"><a href="https://peritiaurbana.com" target="_blank" rel="noopener" style="color:var(--brand);font-weight:700">peritiaurbana.com</a></p></div>'+
     '<div class="src">'+esc(D.instrumento.nota)+'</div>'+
-    '<div class="btn-row"><button class="btn btn-primary" type="button" id="again">Repetir la demostración</button></div>';
+    '<div class="ayto"><div class="eyebrow">¿Y ahora?</div>El siguiente paso es cargar las Normas Subsidiarias de Novelda y revisar los primeros resultados con los técnicos municipales. Así el visor mostrará los datos reales del municipio.<br><b>'+esc(D.contacto)+'</b></div>'+
+    '<div class="btn-row"><button class="btn btn-primary" type="button" id="again">Repetir la demostración</button><button class="btn btn-ghost" type="button" id="otro">Ver los ejemplos</button></div>';
   bindBack("toInicio", renderInicio);
   bindBack("again", function(){ startCase(D.casos[0].id); });
+  bindBack("otro", renderInicio);
+  MEM.set("progreso", null);
   scrollTop();
 }
 function benefit(i,t,d){ return '<div class="benefit"><span class="ico" aria-hidden="true">'+i+'</span><div><b>'+t+'</b><div class="muted">'+d+'</div></div></div>'; }
@@ -1551,5 +1641,7 @@ document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeRepor
 document.getElementById("homeBtn").onclick = function(){ closeReport(); if(freeMarker){map.removeLayer(freeMarker);freeMarker=null;} renderInicio(); };
 
 renderInicio();
+if(!MEM.get("intro")) abrirIntro();
+document.addEventListener("keydown",function(e){ if(e.key==="Escape" && !introEl.hidden) cerrarIntro(false); });
 })();
 </script>

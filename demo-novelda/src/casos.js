@@ -23,6 +23,7 @@
  */
 window.NOVELDA_DEMO = {
   municipio: "Novelda",
+  contacto: "Para cualquier duda, su contacto en UrbanGPT · PeritiaUrbana le atenderá.",
   centro: [38.3872, -0.7720],
   zoomInicial: 14,
   instrumento: {
@@ -56,6 +57,7 @@ window.NOVELDA_DEMO = {
     /* ------------------------------------------------------------------ */
     {
       id: "centro",
+      paraAyto: "Hoy esta pregunta llega al mostrador o por teléfono. Con el visor, la vecina tiene la respuesta en un minuto y llega a la licencia sabiendo qué pedir.",
       icono: "🏠",
       titulo: "Quiero reformar mi casa en el centro",
       persona: "Una vecina con una vivienda de dos plantas junto a la Plaça d'Espanya",
@@ -112,6 +114,7 @@ window.NOVELDA_DEMO = {
     /* ------------------------------------------------------------------ */
     {
       id: "industrial",
+      paraAyto: "Una empresa que sabe en minutos cuánto puede crecer decide antes de invertir. Es una herramienta para atraer y retener actividad económica.",
       icono: "🏭",
       titulo: "Mi empresa quiere ampliar la nave",
       persona: "Un empresario con una nave de 600 m² en el Polígono industrial Santa Fe",
@@ -168,6 +171,7 @@ window.NOVELDA_DEMO = {
     /* ------------------------------------------------------------------ */
     {
       id: "patrimonio",
+      paraAyto: "El comprador conoce la protección antes de comprar. Se evitan conflictos posteriores y se protege mejor el patrimonio del municipio.",
       icono: "🏛️",
       titulo: "¿Este edificio está protegido?",
       persona: "Una persona interesada en un edificio modernista de la calle Major",
@@ -222,6 +226,7 @@ window.NOVELDA_DEMO = {
     /* ------------------------------------------------------------------ */
     {
       id: "rural",
+      paraAyto: "Se acaban las falsas expectativas en suelo rural. La respuesta es clara desde el principio y se evitan expedientes y obras sin licencia.",
       icono: "🌳",
       titulo: "¿Puedo construir en el campo?",
       persona: "Una familia con un terreno de 15.000 m² cerca del Santuario de la Magdalena",
@@ -277,6 +282,7 @@ window.NOVELDA_DEMO = {
     /* ------------------------------------------------------------------ */
     {
       id: "urbanizable",
+      paraAyto: "El vecino entiende por qué todavía no puede construir. Es una llamada menos al Ayuntamiento y más confianza en el proceso.",
       icono: "🏗️",
       titulo: "He comprado en una zona nueva: ¿cuándo puedo construir?",
       persona: "Un matrimonio que ha comprado una parcela en un sector residencial en obras",

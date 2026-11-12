@@ -6,7 +6,8 @@ Demo guiada para presentar a una persona sin formación técnica (concejalía) e
 `dist/visor-novelda-web.html` es la versión que se publica como enlace: dentro del enlace no se cargan los mapas externos y se muestra un plano esquemático a escala.
 Funciona sin internet. Con internet, además carga el callejero, la foto aérea y las parcelas del Catastro.
 
-## Recorrido
+## Recorrido (autoguiado: no requiere explicación)
+Primera visita: bienvenida de 4 pantallas. En cada paso, un recuadro 💡 explica qué se ve; en el paso 4, «Por qué le importa al Ayuntamiento». La primera vez se señala «Toque aquí» sobre un dato. Recuerda el progreso y ofrece «Continuar donde lo dejó». Botón «? Ayuda» siempre visible.
 Bienvenida → 5 casos (vivienda en el centro, nave en el polígono Santa Fe, edificio patrimonial, suelo rural y sector urbanizable en obras) →
 5 pasos por caso (¿dónde está? · ¿qué suelo es? · ¿qué le afecta? · ¿qué se puede hacer? · informe PDF) → resumen de beneficios.
 También tiene un modo de exploración libre: se toca el mapa y se consulta la referencia catastral en directo.
