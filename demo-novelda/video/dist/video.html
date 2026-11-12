@@ -211,7 +211,7 @@ h1,h2{font-family:var(--f-head);font-weight:700;margin:0;line-height:1.08;letter
   <section class="scene" data-s="10" style="background:var(--brand);color:#fff">
     <div style="position:absolute;inset:0;display:grid;place-items:center;text-align:center">
       <div>
-        <h1 class="h-xl" data-a="up" data-in=".3"><span class="muni cap">Novelda</span>, en un clic.</h1>
+        <h1 class="h-xl" data-a="up" data-in=".3"><span class="muni mayus">Novelda</span>, en un clic.</h1>
         <div style="font-size:44px;font-weight:700;margin-top:34px;opacity:.95" data-a="up" data-in="1.1">UrbanGPT · PeritiaUrbana</div>
         <div class="mono" style="font-size:40px;margin-top:10px;color:#bfe6cd" data-a="up" data-in="1.4">peritiaurbana.com</div>
         <div id="ref" style="font-size:30px;margin-top:30px;color:#dff2e6" data-a="up" data-in="2"></div>
@@ -297,7 +297,7 @@ PINS.forEach(function(p, i){
 });
 
 /* Municipio y textos opcionales */
-function setMuni(m){ document.querySelectorAll(".muni").forEach(function(e){ e.textContent = e.classList.contains("cap") ? m.charAt(0).toUpperCase()+m.slice(1) : m; }); }
+function setMuni(m){ document.querySelectorAll(".muni").forEach(function(e){ e.textContent = e.classList.contains("mayus") ? m.charAt(0).toUpperCase()+m.slice(1) : m; }); }
 setMuni(CONFIG.municipio);
 document.getElementById("ref").textContent = CONFIG.referencia || "";
 document.getElementById("contacto").textContent = CONFIG.contacto || "";
