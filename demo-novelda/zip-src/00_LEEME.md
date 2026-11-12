@@ -10,9 +10,10 @@ Todo lo necesario para producir un vídeo de unos 85 s, genérico para cualquier
 | `03_IDENTIDAD_DE_MARCA.md` | Colores, tipografías, tono y mensajes clave. |
 | `04_CASOS_DE_EJEMPLO.md` | Contenido completo y coherente de los 5 casos (vivienda, nave, edificio protegido, suelo rural y sector en desarrollo). |
 | `05_REGLAS_DE_VERACIDAD.md` | Lo que el vídeo nunca puede afirmar. |
-| `06_video_referencia/` | Vídeo ya producido con este guion (Novelda y genérico) y sus fotogramas clave. |
+| `06_video_referencia/` | **Vídeo final con música y locución** (Novelda y genérico «su municipio»), subtítulos `.srt` y fotogramas clave. |
 | `07_capturas_demo/` | Capturas a 1920×1080 de la demo interactiva, como referencia visual de la interfaz real. |
 | `08_demo_interactiva/visor-novelda-demo.html` | La demo completa en un solo archivo (doble clic para abrirla). |
+| `09_AUDIO_Y_LICENCIAS.md` | Origen de la música (composición propia) y de la voz (Kokoro, Apache-2.0). |
 
 ## Para otro ayuntamiento
 - **Vídeo de referencia:** se vuelve a renderizar con `node render.js "Nombre del municipio"`. El código está en el repositorio, en `demo-novelda/video/`.
@@ -21,4 +22,4 @@ Todo lo necesario para producir un vídeo de unos 85 s, genérico para cualquier
 ## Pendiente de decisión (Jau)
 1. Si se incluye «Ya en funcionamiento en Elche».
 2. El contacto que aparece en el cierre.
-3. La música: libre de derechos o con licencia comercial.
+3. Voz: la locución actual es sintética. Si se prefiere una voz humana, hay que regrabarla siguiendo el `.srt`.
