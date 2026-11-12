@@ -6,7 +6,7 @@
 <title>Visor Urbanístico Novelda</title>
 <!--@@HEAD_START@@-->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
 <style>/* required styles */
 
 .leaflet-pane,
@@ -672,29 +672,30 @@ svg.leaflet-image-layer.leaflet-interactive path {
 <style>
 /* Layout: panel guiado a la izquierda + mapa a la derecha; en móvil, mapa arriba y panel abajo. */
 :root{
-  --bg:#f3f5f4; --panel:#ffffff; --ink:#18262b; --muted:#56676d; --line:#dfe5e3;
-  --brand:#0d6b67; --brand-ink:#ffffff; --brand-soft:#e0efed; --accent:#c4562c;
+  --bg:#f9f5f3; --panel:#ffffff; --ink:#0b0b0b; --muted:#5f5955; --line:#e6ded9;
+  --brand:#15603a; --brand-ink:#ffffff; --brand-soft:#e5efe8; --accent:#c4562c;
   --si:#237a49; --si-soft:#e1f2e7; --no:#b3372b; --no-soft:#fbe5e2; --cond:#9a6700; --cond-soft:#fdf1d3;
   --ej:#7a5300; --ej-soft:#fff1cc; --real:#1d6a3a; --real-soft:#e0f2e6;
-  --map-bg:#e7ecea; --map-grid:rgba(13,107,103,.08);
+  --map-bg:#efe9e5; --map-grid:rgba(21,96,58,.08);
   --shadow:0 8px 24px rgba(16,30,34,.12);
-  --f-head:"Space Grotesk","Segoe UI",system-ui,sans-serif;
+  --f-head:"Fraunces",ui-serif,Georgia,serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
   --f-body:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --bg:#11181a; --panel:#182225; --ink:#ebf2f2; --muted:#9fb0b4; --line:#2a383c;
-  --brand:#45b5aa; --brand-ink:#0b1a19; --brand-soft:#16332f; --accent:#e88a62;
+  --bg:#141211; --panel:#1d1a18; --ink:#f4efec; --muted:#b0a7a1; --line:#332e2b;
+  --brand:#5cbf87; --brand-ink:#0b1a12; --brand-soft:#173323; --accent:#e88a62;
   --si:#6fd197; --si-soft:#153222; --no:#f08b80; --no-soft:#3a1a17; --cond:#f0c25c; --cond-soft:#36290c;
   --ej:#f3c66b; --ej-soft:#3a2f14; --real:#7fd59d; --real-soft:#163322;
-  --map-bg:#1a2427; --map-grid:rgba(69,181,170,.10);
+  --map-bg:#1f1b19; --map-grid:rgba(92,191,135,.10);
   --shadow:0 8px 24px rgba(0,0,0,.45); color-scheme:dark;
 }}
 :root[data-theme="dark"]{
-  --bg:#11181a; --panel:#182225; --ink:#ebf2f2; --muted:#9fb0b4; --line:#2a383c;
-  --brand:#45b5aa; --brand-ink:#0b1a19; --brand-soft:#16332f; --accent:#e88a62;
+  --bg:#141211; --panel:#1d1a18; --ink:#f4efec; --muted:#b0a7a1; --line:#332e2b;
+  --brand:#5cbf87; --brand-ink:#0b1a12; --brand-soft:#173323; --accent:#e88a62;
   --si:#6fd197; --si-soft:#153222; --no:#f08b80; --no-soft:#3a1a17; --cond:#f0c25c; --cond-soft:#36290c;
   --ej:#f3c66b; --ej-soft:#3a2f14; --real:#7fd59d; --real-soft:#163322;
-  --map-bg:#1a2427; --map-grid:rgba(69,181,170,.10);
+  --map-bg:#1f1b19; --map-grid:rgba(92,191,135,.10);
   --shadow:0 8px 24px rgba(0,0,0,.45); color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -718,7 +719,7 @@ h1{font-size:1.65rem} h2{font-size:1.3rem} h3{font-size:1.02rem;margin-top:1.1em
 p{margin:.35em 0 .8em}
 .muted{color:var(--muted)}
 .big{font-size:1.08rem}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:14px;padding:13px 18px;font-weight:700;font-size:1rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:13px 18px;font-weight:700;font-size:1rem}
 .btn-primary{background:var(--brand);color:var(--brand-ink);box-shadow:var(--shadow)}
 .btn-ghost{background:transparent;color:var(--brand);border:2px solid var(--brand)}
 .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
@@ -746,6 +747,16 @@ details.item>summary{list-style:none;display:flex;justify-content:space-between;
 details.item>summary::-webkit-details-marker{display:none}
 details.item>summary .k{color:var(--muted);font-size:.9rem;min-width:0}
 details.item>summary .v{font-weight:700;text-align:right;min-width:0}
+.mono{font-family:var(--f-mono);font-size:.9em;letter-spacing:-.01em}
+.search{display:flex;gap:8px;margin:14px 0 6px;position:relative}
+.search input{flex:1;min-width:0;font:inherit;padding:13px 14px;border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--ink)}
+.search input:focus{outline:3px solid var(--brand-soft);border-color:var(--brand)}
+.sugg{position:absolute;top:100%;left:0;right:0;z-index:10;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);margin-top:6px;overflow:hidden}
+.sugg button{display:flex;gap:10px;width:100%;text-align:left;background:none;border:0;padding:10px 14px;border-bottom:1px solid var(--line)}
+.sugg button:last-child{border-bottom:0}
+.sugg button:hover,.sugg button:focus-visible{background:var(--brand-soft)}
+.sugg small{display:block;color:var(--muted)}
+.hint{font-size:.8rem;color:var(--muted)}
 details.item>summary::after{content:"ⓘ";color:var(--brand);font-size:.9rem;flex:none}
 details.item[open]>summary::after{content:"✕"}
 details.item .more{padding:0 12px 12px;font-size:.88rem;color:var(--muted);display:grid;gap:6px}
@@ -768,7 +779,7 @@ details.item .more b{color:var(--ink)}
 .nav{display:flex;gap:10px;margin-top:16px;position:sticky;bottom:-20px;background:var(--panel);padding:12px 0 20px}
 .nav .btn{flex:1}
 .linkbtn{background:none;border:0;color:var(--brand);font-weight:700;padding:6px 0;text-decoration:underline;text-underline-offset:3px}
-.back{background:none;border:0;color:var(--muted);padding:4px 0;font-size:.9rem}
+.back{display:block;background:none;border:0;color:var(--muted);padding:4px 0 8px;font-size:.9rem}
 .benefit{display:flex;gap:12px;align-items:flex-start;margin:12px 0}
 .benefit .ico{font-size:1.4rem;width:40px;height:40px;display:grid;place-items:center;background:var(--brand-soft);border-radius:12px;flex:none}
 .mapnote{position:absolute;left:12px;bottom:28px;z-index:700;background:var(--panel);color:var(--muted);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:.76rem;max-width:min(360px,70%);box-shadow:var(--shadow)}
@@ -830,7 +841,7 @@ details.item .more b{color:var(--ink)}
     <div class="logo" aria-hidden="true">N</div>
     <div>
       <div class="htitle">Visor Urbanístico · Novelda</div>
-      <div class="hsub">Propuesta de UrbanGPT para el municipio</div>
+      <div class="hsub">UrbanGPT · PeritiaUrbana — propuesta para el Ayuntamiento</div>
     </div>
     <span class="badge-demo" title="Versión de demostración con datos de ejemplo">DEMOSTRACIÓN</span>
     <button class="hbtn" id="homeBtn" type="button">Inicio</button>
@@ -1293,6 +1304,7 @@ function fuenteFinal(){ return "En el visor final: "+esc(D.instrumento.nombre)+"
 
 /* Fila consultable: se despliega con la explicación y el origen del dato */
 function item(k, v, extra, opts){
+  if(/\d/.test(v) && v.length<40) v = '<span class="mono">'+v+'</span>';
   opts = opts || {};
   var explica = extra || D.glosario[k] || "";
   return '<details class="item"><summary><span class="k">'+esc(k)+'</span><span class="v">'+v+(opts.real?tagReal():tagEj())+'</span></summary>'+
@@ -1341,7 +1353,10 @@ function renderInicio(){
     '<span class="qnum">Bienvenida</span>'+
     '<h1>La información urbanística de Novelda, clara y en un clic</h1>'+
     '<p class="big">Cualquier vecino, empresa o técnico puede saber <b>qué puede hacer en su parcela</b> sin ir al Ayuntamiento, con el documento oficial que lo respalda.</p>'+
-    '<div class="btn-row"><button class="btn btn-primary" id="goTour" type="button">▶ Empezar la demostración</button></div>'+
+    '<label for="q" class="hint">Pruebe a buscar, como haría un vecino:</label>'+
+    '<div class="search"><input id="q" type="search" autocomplete="off" placeholder="Dirección o referencia catastral"><div class="sugg" id="sugg" hidden></div></div>'+
+    '<div class="hint">Ejemplos: «calle Major», «polígono», «Magdalena»</div>'+
+    '<div class="btn-row"><button class="btn btn-primary" id="goTour" type="button">▶ Empezar la demostración guiada</button></div>'+
     '<h3>O elija uno de los 5 ejemplos</h3>'+
     '<div class="cards">'+ D.casos.map(function(c){
       return '<button class="card" type="button" data-caso="'+c.id+'"><span class="ico" aria-hidden="true">'+c.icono+'</span><span><b>'+esc(c.titulo)+'</b><span>'+esc(c.persona)+'</span></span></button>';
@@ -1353,8 +1368,25 @@ function renderInicio(){
       '<div>Toque cualquier dato para ver qué significa y de dónde sale.</div></div>';
   document.getElementById("goTour").onclick = function(){ startCase(D.casos[0].id); };
   document.getElementById("goLibre").onclick = renderLibre0;
+  initBuscador();
   panel.querySelectorAll("[data-caso]").forEach(function(b){ b.onclick=function(){ startCase(b.getAttribute("data-caso")); }; });
   scrollTop();
+}
+
+function norm(t){ return String(t).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
+function initBuscador(){
+  var q = document.getElementById("q"), box = document.getElementById("sugg");
+  function pinta(){
+    var t = norm(q.value.trim());
+    var res = !t ? [] : D.casos.filter(function(c){ return norm(c.lugar+" "+c.titulo+" "+c.persona+" "+c.suelo.zona).indexOf(t)>=0 || t.split(/\s+/).every(function(w){ return w.length>2 && norm(c.lugar+" "+c.persona+" "+c.titulo).indexOf(w)>=0; }); });
+    if(!t){ box.hidden = true; return; }
+    box.innerHTML = res.length ? res.map(function(c){ return '<button type="button" data-caso="'+c.id+'"><span aria-hidden="true">'+c.icono+'</span><span>'+esc(c.lugar)+'<small>'+esc(c.titulo)+'</small></span></button>'; }).join("")
+      : '<div style="padding:12px 14px" class="hint">En esta demostración solo están los 5 ejemplos. El visor final encuentra cualquier dirección o referencia catastral de Novelda.</div>';
+    box.hidden = false;
+    box.querySelectorAll("[data-caso]").forEach(function(b){ b.onclick=function(){ startCase(b.getAttribute("data-caso")); }; });
+  }
+  q.addEventListener("input", pinta);
+  q.addEventListener("keydown", function(e){ if(e.key==="Enter"){ var f = box.querySelector("[data-caso]"); if(f) f.click(); } });
 }
 
 function startCase(id){ state = {view:"caso", caso:id, paso:0}; renderPaso(); }
@@ -1431,6 +1463,8 @@ function renderFin(){
     benefit("☺","Fácil para cualquiera","Preguntas sencillas y respuestas claras, en el móvil o en el ordenador, sin conocimientos técnicos.")+
     benefit("⚑","Sin sorpresas","Si un dato no está comprobado, el visor lo dice. Nunca da por hecho lo que no consta.")+
     benefit("↻","Preparado para el nuevo Plan General","Muestra el planeamiento vigente y, aparte, el que esté en tramitación, para que nadie los confunda.")+
+    '<div class="answer"><div class="eyebrow">Ya en funcionamiento</div><div class="t2">El mismo sistema ya da servicio en Elche: informe por referencia catastral, con clasificación del suelo, planeamiento y 19 afecciones sectoriales.</div>'+
+    '<p style="margin:.5em 0 0"><a href="https://peritiaurbana.com" target="_blank" rel="noopener" style="color:var(--brand);font-weight:700">peritiaurbana.com</a></p></div>'+
     '<div class="src">'+esc(D.instrumento.nota)+'</div>'+
     '<div class="btn-row"><button class="btn btn-primary" type="button" id="again">Repetir la demostración</button></div>';
   bindBack("toInicio", renderInicio);
@@ -1503,7 +1537,7 @@ function openReport(c){
     '<tr><th>Instrumento vigente</th><td>'+esc(D.instrumento.nombre)+'. '+esc(D.instrumento.detalle)+'</td></tr>';
   reportEl.innerHTML =
     '<div class="sheet"><div class="watermark" aria-hidden="true">EJEMPLO</div>'+
-    '<div class="muted" style="font-size:.8rem">UrbanGPT · Visor Urbanístico de Novelda · Informe orientativo</div>'+
+    '<div class="muted" style="font-size:.8rem">UrbanGPT · PeritiaUrbana · Visor Urbanístico de Novelda · Informe orientativo</div>'+
     '<h3>Informe urbanístico de la parcela</h3>'+
     '<div class="muted">'+esc(c.lugar)+' · generado el '+hoy+'</div>'+
     '<div class="tbl"><table>'+filas+'</table></div>'+
