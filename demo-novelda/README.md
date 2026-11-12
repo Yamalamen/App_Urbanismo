@@ -14,7 +14,7 @@ También tiene un modo de exploración libre: se toca el mapa y se consulta la r
 ## Qué es real y qué es de ejemplo (fail-closed)
 | Dato | Estado | Fuente |
 |---|---|---|
-| Ubicación de los 4 casos | **Real** | OpenStreetMap/Nominatim, consultado el 12/11/2026 (los ID de OSM están en `src/casos.js`) |
+| Ubicación de los casos 1 a 4 | **Real** | OpenStreetMap/Nominatim, consultado el 12/11/2026 (los ID de OSM están en `src/casos.js`) |
 | Instrumento vigente: Normas Subsidiarias de Novelda, aprobación definitiva por la CTU el 16/10/1992, con modificaciones | **Real** | novelda.es (NNSS.pdf; Modificación Puntual n.º 7 de las NNSS, publicada en 06/2026) |
 | Nuevo Plan General | En tramitación; **estado actual NO ACREDITADO** | Noticia de VisualUrb (2023). Hay que verificarlo en el Ayuntamiento |
 | Datos de parcela, clasificación, parámetros, cálculos, afecciones, respuestas, hitos de gestión y trámites | **EJEMPLO** (ilustrativo, no oficial; decisión de Jau del 12/11/2026) | Ninguna. Cada valor lleva en pantalla y en el informe la etiqueta «Ejemplo» |
