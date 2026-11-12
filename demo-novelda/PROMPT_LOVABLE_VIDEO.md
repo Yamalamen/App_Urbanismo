@@ -3,6 +3,8 @@
 > **Cómo usarlo:** copia todo el bloque «PROMPT» en un proyecto nuevo de Lovable.
 > Lovable no exporta vídeo: construye una **página animada que se reproduce sola, como un vídeo**. El MP4 se obtiene grabándola en pantalla (ver «Cómo obtener el MP4», al final).
 > Antes de pegarlo, revisa los 3 puntos marcados con **[DECIDE JAU]**.
+> Coherencia: las escenas 4 a 8 hablan de **una sola parcela** (una vivienda en la «Calle Mayor, 12»); el cálculo de la escena 7 es el de esa vivienda.
+> Referencia visual: la carpeta `06_video_referencia` del ZIP contiene un vídeo ya hecho con este mismo guion.
 
 ---
 
@@ -57,7 +59,7 @@ Cada escena es un componente. Usa transiciones suaves de 400 a 600 ms: fundido c
 | 4 | 18–26 | Un móvil en el centro. Se teclea «Calle Mayor, 12» y la cámara se acerca al plano SVG hasta resaltar una parcela con contorno naranja pulsante. | «1 · Escribe tu dirección» |
 | 5 | 26–34 | Aparece una tarjeta junto a la parcela: «Suelo urbano · Casco tradicional», con una explicación de una línea. | «2 · Descubre qué suelo es, sin tecnicismos» |
 | 6 | 34–44 | Lista de 4 afecciones que se rellenan una a una con su estado (2 «Le afecta» en rojo y 2 «No le afecta» en verde). Una lupa pasa sobre el verde y aparece un sello: «Comprobado con fuente oficial». | «3 · Mira qué le afecta» · luego: «Solo decimos "no le afecta" cuando está comprobado.» |
-| 7 | 44–54 | Preguntas con respuestas en forma de chip (Sí / No / Con condiciones). Después, un cálculo en mono que se escribe: `1.200 m² × 70 % = 840 m²` · `840 − 600 = 240 m² más`. | «4 · Sabe qué puede hacer, con la cuenta hecha» |
+| 7 | 44–54 | Preguntas sobre la misma vivienda («¿Puedo reformar el interior?» Sí · «¿Puedo añadir una planta?» Con condiciones · «¿Puedo abrir un taller?» No), con respuestas en forma de chip. Después, un cálculo en mono que se escribe, sobre la **misma vivienda** de las escenas 4 a 6: `140 m² × 2,5 = 350 m²` · `Hecho: 210 m²` · `350 − 210 = 140 m²` → «Cabe una planta más». | «4 · Sabe qué puede hacer, con la cuenta hecha» |
 | 8 | 54–61 | Un PDF sale del móvil. En sus líneas aparecen etiquetas de fuente: «Norma · artículo · fecha». | «5 · Y se lleva un informe con sus fuentes» |
 | 9 | 61–70 | Carrusel rápido de 5 tarjetas sobre el plano: 🏠 Vivienda en el centro · 🏭 Nave industrial · 🏛️ Edificio protegido · 🌳 Suelo rural · 🏗️ Zona en desarrollo (con una barra de hitos: plan ✓, reparto ✓, obras 80 %, recepción pendiente). | «Para vecinos, empresas, compradores y técnicos» |
 | 10 | 70–79 | Cuatro beneficios que entran de uno en uno, con icono lineal. | «Menos consultas en el mostrador» · «Más transparencia: cada dato con su documento» · «Fácil para cualquiera, también desde el móvil» · «Preparado para el nuevo planeamiento» |

@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Visor Urbanístico · Vídeo</title>
+<!--@@HEAD_START@@-->
+<style>/*@@FONTS@@*/</style>
+<style>
+/* Escenario fijo 1920×1080, escalado a la ventana. Todo se anima desde render(t): reproducible fotograma a fotograma. */
+:root{
+  --bg:#f9f5f3; --ink:#0b0b0b; --muted:#5f5955; --line:#e6ded9; --card:#ffffff;
+  --brand:#15603a; --brand-soft:#e5efe8; --accent:#c4562c;
+  --si:#237a49; --si-soft:#e1f2e7; --no:#b3372b; --no-soft:#fbe5e2; --cond:#9a6700; --cond-soft:#fdf1d3;
+  --f-head:"Fraunces",Georgia,serif; --f-body:"Inter",system-ui,sans-serif; --f-mono:"JetBrains Mono",ui-monospace,monospace;
+}
+html,body{margin:0;height:100%;background:#000;overflow:hidden}
+#wrap{position:fixed;inset:0;display:grid;place-items:center;background:#000}
+#stage{width:1920px;height:1080px;position:relative;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--f-body);transform-origin:center center;flex:none}
+.scene{position:absolute;inset:0;opacity:0;will-change:opacity}
+[data-a]{will-change:transform,opacity}
+.cap{position:absolute;left:120px;top:84px;right:120px}
+.step{display:inline-flex;align-items:center;gap:14px;font-family:var(--f-body);font-weight:800;font-size:30px;color:var(--brand);letter-spacing:.02em}
+.step i{display:inline-grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--brand);color:#fff;font-style:normal;font-size:28px}
+h1,h2{font-family:var(--f-head);font-weight:700;margin:0;line-height:1.08;letter-spacing:-.01em}
+.h-xl{font-size:118px} .h-l{font-size:76px} .h-m{font-size:60px}
+.sub{font-size:40px;color:var(--muted);margin-top:18px;line-height:1.3}
+.card{position:absolute;background:var(--card);border:2px solid var(--line);border-radius:28px;box-shadow:0 30px 60px rgba(30,20,10,.12);padding:36px 40px}
+.eyebrow{font-size:24px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:20px 0;border-bottom:2px solid var(--line);font-size:34px;font-weight:600}
+.row:last-child{border-bottom:0}
+.chip{display:inline-flex;align-items:center;border-radius:999px;padding:8px 22px;font-weight:800;font-size:28px;white-space:nowrap}
+.chip.si{background:var(--si-soft);color:var(--si)} .chip.no{background:var(--no-soft);color:var(--no)} .chip.cond{background:var(--cond-soft);color:var(--cond)}
+.mono{font-family:var(--f-mono)}
+.bubble{position:absolute;display:flex;align-items:center;gap:28px}
+.bubble .b{background:#fff;border:2px solid var(--line);border-radius:36px;padding:30px 44px;font-family:var(--f-head);font-weight:700;font-size:62px;box-shadow:0 24px 50px rgba(30,20,10,.10);white-space:nowrap}
+.wm{position:absolute;right:28px;bottom:22px;font-size:22px;font-weight:700;color:rgba(11,11,11,.42);letter-spacing:.04em;z-index:50}
+.phone{position:absolute;width:380px;height:760px;border-radius:58px;background:#111;padding:16px;box-shadow:0 40px 80px rgba(0,0,0,.28)}
+.phone .scr{width:100%;height:100%;border-radius:44px;background:var(--bg);overflow:hidden;position:relative}
+.search{margin:70px 22px 0;background:#fff;border:2px solid var(--line);border-radius:22px;padding:20px 22px;font-size:27px;display:flex;gap:12px;align-items:center;min-height:36px}
+.caret{display:inline-block;width:3px;height:32px;background:var(--brand);margin-left:2px;vertical-align:middle}
+.result{margin:16px 22px 0;background:var(--brand-soft);border-radius:18px;padding:18px 22px;font-size:25px;font-weight:700}
+.result small{display:block;font-weight:500;color:var(--muted);font-size:21px;margin-top:4px}
+.tap{position:absolute;width:64px;height:64px;border-radius:50%;background:rgba(196,86,44,.35);border:4px solid var(--accent)}
+.pdf{position:absolute;width:520px;height:690px;background:#fff;border-radius:16px;box-shadow:0 40px 80px rgba(30,20,10,.18);padding:40px;box-sizing:border-box}
+.pdf .l{height:16px;border-radius:8px;background:#ece6e1;margin:14px 0}
+.pdf .tag{display:inline-block;background:var(--brand-soft);color:var(--brand);border-radius:10px;padding:6px 14px;font-size:20px;font-weight:800;margin:6px 6px 0 0}
+.mini{position:absolute;width:300px;background:#fff;border:2px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 24px 50px rgba(30,20,10,.12)}
+.mini svg{width:64px;height:64px}
+.mini b{display:block;font-size:30px;margin-top:10px;line-height:1.15}
+.mini span{display:block;font-size:22px;color:var(--muted);margin-top:6px}
+.hitos{display:flex;gap:6px;margin-top:12px}
+.hitos i{flex:1;height:12px;border-radius:6px;background:var(--line)}
+.ben{position:absolute;width:760px;display:flex;gap:28px;align-items:flex-start}
+.ben .ic{width:96px;height:96px;border-radius:26px;background:var(--brand-soft);display:grid;place-items:center;flex:none}
+.ben .ic svg{width:54px;height:54px}
+.ben b{font-family:var(--f-head);font-size:46px;line-height:1.12;display:block}
+#ctrl{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);display:flex;gap:10px;align-items:center;background:rgba(20,20,20,.8);color:#fff;border-radius:999px;padding:8px 14px;font:14px system-ui;z-index:10}
+#ctrl button{background:#fff;color:#111;border:0;border-radius:999px;padding:6px 12px;font-weight:700;cursor:pointer}
+#ctrl input{width:140px;border-radius:999px;border:0;padding:6px 10px}
+#bar{width:220px;height:6px;background:#555;border-radius:3px;overflow:hidden}#bar i{display:block;height:100%;background:#5cbf87;width:0}
+</style>
+<!--@@HEAD_END@@-->
+</head>
+<body>
+<!--@@BODY_START@@-->
+<div id="wrap"><div id="stage">
+
+  <!-- Capa de mapa (escenas 4–9) -->
+  <svg id="map" width="1920" height="1080" viewBox="0 0 1920 1080" style="position:absolute;inset:0;opacity:0">
+    <g id="cam"></g>
+  </svg>
+
+  <!-- 1 · Preguntas -->
+  <section class="scene" data-s="0">
+    <div class="bubble" style="left:160px;top:170px" data-a="up" data-in=".2"><svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#e5efe8"/><circle cx="60" cy="46" r="20" fill="#15603a"/><path d="M24 104c6-24 66-24 72 0" fill="#15603a"/></svg><div class="b">¿Puedo reformar mi casa?</div></div>
+    <div class="bubble" style="left:560px;top:450px" data-a="up" data-in="1.3"><svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#fdf1d3"/><circle cx="60" cy="46" r="20" fill="#9a6700"/><path d="M24 104c6-24 66-24 72 0" fill="#9a6700"/></svg><div class="b">¿Puedo ampliar mi nave?</div></div>
+    <div class="bubble" style="left:260px;top:730px" data-a="up" data-in="2.4"><svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#fbe5e2"/><circle cx="60" cy="46" r="20" fill="#c4562c"/><path d="M24 104c6-24 66-24 72 0" fill="#c4562c"/></svg><div class="b">¿Este edificio está protegido?</div></div>
+  </section>
+
+  <!-- 2 · Problema -->
+  <section class="scene" data-s="1" style="background:#e8e5e2">
+    <svg style="position:absolute;left:140px;top:170px" width="560" height="480" viewBox="0 0 560 480" data-a="up" data-in=".2">
+      <rect x="20" y="300" width="520" height="40" rx="8" fill="#9b958f"/><rect x="40" y="340" width="20" height="120" fill="#9b958f"/><rect x="500" y="340" width="20" height="120" fill="#9b958f"/>
+      <g fill="#b9b3ad"><circle cx="110" cy="200" r="34"/><path d="M60 300c4-50 96-50 100 0z"/><circle cx="230" cy="190" r="34"/><path d="M180 300c4-50 96-50 100 0z"/><circle cx="350" cy="200" r="34"/><path d="M300 300c4-50 96-50 100 0z"/><circle cx="470" cy="195" r="34"/><path d="M420 300c4-50 96-50 100 0z"/></g>
+      <text x="280" y="420" text-anchor="middle" font-family="Inter" font-weight="800" font-size="34" fill="#7d7771">Turno 47</text>
+    </svg>
+    <svg id="ring" style="position:absolute;left:820px;top:240px" width="300" height="300" viewBox="0 0 300 300" data-a="pop" data-in="1.2">
+      <circle cx="150" cy="150" r="140" fill="#d9d4cf"/>
+      <path d="M95 90c-10 10-12 30 0 55 20 40 50 70 90 85 22 8 38 4 48-6l10-12-38-30-18 16c-20-8-40-28-50-50l16-18-30-38z" fill="#7d7771"/>
+      <path d="M200 70a60 60 0 0 1 40 40M195 100a30 30 0 0 1 20 20" stroke="#7d7771" stroke-width="10" fill="none" stroke-linecap="round"/>
+    </svg>
+    <div style="position:absolute;left:1260px;top:130px;width:520px;height:560px">
+      <div id="stack" style="position:absolute;left:60px;bottom:0;width:380px;height:520px;transform-origin:bottom;" data-a="growY" data-in="2.2" data-d="2.4">
+        <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,#fff 0 18px,#cfc8c1 18px 22px);border-radius:10px;box-shadow:0 20px 40px rgba(0,0,0,.12)"></div>
+      </div>
+      <div style="position:absolute;right:-10px;top:40px;background:#7d7771;color:#fff;font-weight:800;font-size:38px;border-radius:16px;padding:12px 22px" data-a="pop" data-in="3.6">300 págs.</div>
+    </div>
+    <div style="position:absolute;left:120px;right:120px;bottom:110px;text-align:center">
+      <h2 class="h-m" style="color:#4b4642" data-a="up" data-in="3.4">Hoy, para saberlo, hay que pedir cita, llamar…</h2>
+      <h2 class="h-m" style="color:#4b4642;margin-top:10px" data-a="up" data-in="4.4">o descifrar cientos de páginas.</h2>
+    </div>
+  </section>
+
+  <!-- 3 · Producto -->
+  <section class="scene" data-s="2">
+    <div style="position:absolute;left:960px;top:540px;width:2400px;height:2400px;margin:-1200px 0 0 -1200px;border-radius:50%;background:var(--brand-soft)" data-a="burst" data-in="0" data-d="1.2"></div>
+    <div style="position:absolute;inset:0;display:grid;place-items:center;text-align:center">
+      <div>
+        <svg width="150" height="150" viewBox="0 0 150 150" data-a="pop" data-in=".5"><rect width="150" height="150" rx="36" fill="#15603a"/><path d="M75 30c-19 0-34 15-34 34 0 26 34 56 34 56s34-30 34-56c0-19-15-34-34-34z" fill="#fff"/><circle cx="75" cy="64" r="13" fill="#15603a"/></svg>
+        <div class="sub" style="margin-top:30px;color:var(--brand);font-weight:800;letter-spacing:.06em" data-a="up" data-in=".9">UrbanGPT · PeritiaUrbana</div>
+        <h1 class="h-l" style="margin-top:18px" data-a="up" data-in="1.3">Visor Urbanístico de</h1>
+        <h1 class="h-xl muni" style="color:var(--brand)" data-a="up" data-in="1.7">Novelda</h1>
+        <div class="sub" data-a="up" data-in="2.6">Toda la información urbanística, clara y en un clic.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · Buscar -->
+  <section class="scene" data-s="3">
+    <div class="cap"><div class="step" data-a="left" data-in=".3"><i>1</i>Paso 1</div><h2 class="h-l" style="margin-top:12px" data-a="left" data-in=".5">Escribe tu dirección</h2></div>
+    <div class="phone" style="left:140px;top:290px" data-a="up" data-in=".7"><div class="scr">
+      <div class="search"><svg width="30" height="30" viewBox="0 0 24 24"><circle cx="10" cy="10" r="7" stroke="#5f5955" stroke-width="2.5" fill="none"/><path d="M15 15l6 6" stroke="#5f5955" stroke-width="2.5"/></svg><span id="typed" data-type="Calle Mayor, 12" data-in="1.6" data-cps="11"></span><span class="caret" id="caret"></span></div>
+      <div class="result" data-a="up" data-in="3.4">Calle Mayor, 12<small>Parcela encontrada</small></div>
+      <div class="tap" style="left:150px;top:200px" data-a="tap" data-in="4.2" data-d=".8"></div>
+    </div></div>
+  </section>
+
+  <!-- 5 · Suelo -->
+  <section class="scene" data-s="4">
+    <div class="cap"><div class="step" data-a="left" data-in=".2"><i>2</i>Paso 2</div><h2 class="h-l" style="margin-top:12px" data-a="left" data-in=".4">Descubre qué suelo es, sin tecnicismos</h2></div>
+    <div class="card" style="left:1120px;top:330px;width:660px" data-a="right" data-in=".9">
+      <div class="eyebrow">Clase de suelo</div>
+      <h2 class="h-m" style="margin-top:8px">Suelo urbano</h2>
+      <div style="font-size:36px;font-weight:700;margin-top:10px">Zona: Casco tradicional</div>
+      <div style="font-size:32px;color:var(--muted);margin-top:18px;line-height:1.35" data-a="up" data-in="2">Ciudad ya construida: se puede edificar y reformar según las reglas de la zona.</div>
+    </div>
+  </section>
+
+  <!-- 6 · Afecciones -->
+  <section class="scene" data-s="5">
+    <div class="cap"><div class="step" data-a="left" data-in=".2"><i>3</i>Paso 3</div><h2 class="h-l" style="margin-top:12px" data-a="left" data-in=".4">Mira qué le afecta</h2></div>
+    <div class="card" style="left:1060px;top:300px;width:740px">
+      <div class="row" data-a="up" data-in=".9"><span>Edificios protegidos</span><span class="chip no" data-a="pop" data-in="1.3">Le afecta</span></div>
+      <div class="row" data-a="up" data-in="1.5"><span>Vigilancia arqueológica</span><span class="chip no" data-a="pop" data-in="1.9">Le afecta</span></div>
+      <div class="row" id="rowInund" data-a="up" data-in="2.1"><span>Zona inundable</span><span class="chip si" data-a="pop" data-in="2.5">No le afecta</span></div>
+      <div class="row" data-a="up" data-in="2.7"><span>Carreteras</span><span class="chip si" data-a="pop" data-in="3.1">No le afecta</span></div>
+    </div>
+    <svg style="position:absolute;left:1500px;top:560px" width="120" height="120" viewBox="0 0 120 120" data-a="lupa" data-in="3.8" data-d="1.4"><circle cx="50" cy="50" r="34" stroke="#0b0b0b" stroke-width="9" fill="rgba(255,255,255,.4)"/><path d="M75 75l32 32" stroke="#0b0b0b" stroke-width="12" stroke-linecap="round"/></svg>
+    <div style="position:absolute;left:1180px;top:820px;background:var(--si);color:#fff;font-weight:800;font-size:32px;border-radius:16px;padding:14px 26px" data-a="stamp" data-in="5.2">✓ Comprobado con fuente oficial</div>
+    <div style="position:absolute;left:120px;bottom:120px;width:860px">
+      <h2 class="h-m" style="color:var(--brand)" data-a="up" data-in="5.8">Solo decimos «no le afecta» cuando está comprobado.</h2>
+    </div>
+  </section>
+
+  <!-- 7 · Qué puede hacer -->
+  <section class="scene" data-s="6">
+    <div class="cap"><div class="step" data-a="left" data-in=".2"><i>4</i>Paso 4</div><h2 class="h-l" style="margin-top:12px" data-a="left" data-in=".4">Sabe qué puede hacer, con la cuenta hecha</h2></div>
+    <div class="card" style="left:100px;top:330px;width:760px">
+      <div class="row" data-a="up" data-in=".9"><span>¿Puedo reformar el interior?</span><span class="chip si" data-a="pop" data-in="1.3">Sí</span></div>
+      <div class="row" data-a="up" data-in="1.6"><span>¿Puedo añadir una planta?</span><span class="chip cond" data-a="pop" data-in="2">Con condiciones</span></div>
+      <div class="row" data-a="up" data-in="2.3"><span>¿Puedo abrir un taller?</span><span class="chip no" data-a="pop" data-in="2.7">No</span></div>
+    </div>
+    <div class="card mono" style="left:990px;top:330px;width:750px;font-size:33px;line-height:1.7;background:#0f1a14;color:#e9f3ec;border-color:#0f1a14" data-a="right" data-in="3.2">
+      <div style="font-family:var(--f-body);font-size:24px;font-weight:800;letter-spacing:.08em;color:#8fd1a8;margin-bottom:6px">¿CUÁNTO MÁS SE PUEDE CONSTRUIR?</div>
+      <div style="white-space:pre" data-type="Máximo:  140 m² × 2,5 = 350 m²" data-in="3.9" data-cps="22"></div>
+      <div style="white-space:pre" data-type="Hecho:                  210 m²" data-in="5.4" data-cps="22"></div>
+      <div style="color:#5cbf87;font-weight:500;white-space:pre" data-type="Margen:  350 − 210 = 140 m²" data-in="6.6" data-cps="22"></div>
+      <div style="font-family:var(--f-body);font-size:32px;font-weight:700;margin-top:10px;color:#fff" data-a="up" data-in="7.6">→ Cabe una planta más</div>
+    </div>
+  </section>
+
+  <!-- 8 · Informe -->
+  <section class="scene" data-s="7">
+    <div class="cap"><div class="step" data-a="left" data-in=".2"><i>5</i>Paso 5</div><h2 class="h-l" style="margin-top:12px" data-a="left" data-in=".4">Y se lleva un informe con sus fuentes</h2></div>
+    <div class="phone" style="left:200px;top:300px" data-a="up" data-in=".3"><div class="scr"><div class="result" style="margin-top:80px">Informe listo<small>Calle Mayor, 12</small></div><div class="result" style="background:var(--brand);color:#fff;text-align:center">Descargar PDF</div></div></div>
+    <div class="pdf" style="left:1060px;top:300px" data-a="fly" data-in="1.1" data-d="1">
+      <div style="font-family:var(--f-head);font-size:36px;font-weight:700">Informe urbanístico</div>
+      <div style="font-size:22px;color:var(--muted);margin-top:6px">Calle Mayor, 12</div>
+      <div class="l" style="width:90%;margin-top:30px"></div><div class="l" style="width:70%"></div>
+      <span class="tag" data-a="pop" data-in="2.3">Norma</span><span class="tag" data-a="pop" data-in="2.6">Artículo</span><span class="tag" data-a="pop" data-in="2.9">Fecha</span>
+      <div class="l" style="width:85%;margin-top:26px"></div><div class="l" style="width:60%"></div><div class="l" style="width:78%"></div>
+      <span class="tag" data-a="pop" data-in="3.4">Fuente oficial</span>
+      <div class="l" style="width:88%;margin-top:26px"></div><div class="l" style="width:50%"></div>
+    </div>
+  </section>
+
+  <!-- 9 · Casos -->
+  <section class="scene" data-s="8">
+    <div class="cap"><h2 class="h-l" data-a="left" data-in=".3">Para vecinos, empresas, compradores y técnicos</h2></div>
+    <div id="minis"></div>
+  </section>
+
+  <!-- 10 · Beneficios -->
+  <section class="scene" data-s="9">
+    <div class="cap"><div class="step" data-a="left" data-in=".2">Para el Ayuntamiento</div><h2 class="h-l" style="margin-top:12px" data-a="left" data-in=".4">Lo que gana el municipio</h2></div>
+    <div class="ben" style="left:120px;top:400px" data-a="up" data-in="1"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#15603a" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><b>Menos consultas en el mostrador</b></div>
+    <div class="ben" style="left:1000px;top:400px" data-a="up" data-in="2.4"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#15603a" stroke-width="2"><path d="M6 3h9l3 3v15H6z"/><path d="M9 12l2 2 4-4"/></svg></span><b>Más transparencia: cada dato con su documento</b></div>
+    <div class="ben" style="left:120px;top:680px" data-a="up" data-in="3.8"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#15603a" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></span><b>Fácil para cualquiera, también desde el móvil</b></div>
+    <div class="ben" style="left:1000px;top:680px" data-a="up" data-in="5.2"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#15603a" stroke-width="2"><path d="M4 12a8 8 0 0 1 14-5l2-2v6h-6l2-2a5 5 0 1 0 1 6"/></svg></span><b>Preparado para el nuevo planeamiento</b></div>
+  </section>
+
+  <!-- 11 · Cierre -->
+  <section class="scene" data-s="10" style="background:var(--brand);color:#fff">
+    <div style="position:absolute;inset:0;display:grid;place-items:center;text-align:center">
+      <div>
+        <h1 class="h-xl" data-a="up" data-in=".3"><span class="muni cap">Novelda</span>, en un clic.</h1>
+        <div style="font-size:44px;font-weight:700;margin-top:34px;opacity:.95" data-a="up" data-in="1.1">UrbanGPT · PeritiaUrbana</div>
+        <div class="mono" style="font-size:40px;margin-top:10px;color:#bfe6cd" data-a="up" data-in="1.4">peritiaurbana.com</div>
+        <div id="ref" style="font-size:30px;margin-top:30px;color:#dff2e6" data-a="up" data-in="2"></div>
+        <div id="contacto" style="font-size:30px;margin-top:10px;color:#dff2e6" data-a="up" data-in="2.3"></div>
+      </div>
+    </div>
+    <div style="position:absolute;left:0;right:0;bottom:60px;text-align:center;font-size:24px;color:#cfe8d8" data-a="fade" data-in="2.6">Información orientativa. No sustituye cédula, licencia ni certificado municipal.</div>
+  </section>
+
+  <div class="wm" id="wm">Datos ilustrativos</div>
+</div></div>
+
+<div id="ctrl"><button id="play" type="button">⏸</button><button id="rst" type="button">↺</button><div id="bar"><i></i></div><span id="sc">1/11</span><input id="mun" aria-label="Municipio"></div>
+
+<script>
+(function(){
+"use strict";
+var Q = new URLSearchParams(location.search);
+var CONFIG = {
+  municipio: Q.get("municipio") || "Novelda",
+  referencia: Q.get("referencia") || null,   // p. ej. "Ya en funcionamiento en Elche" (pendiente de decisión)
+  contacto: Q.get("contacto") || null,
+  dur: [5,7,6,8,8,10,10,7,9,9,6]
+};
+var START = [], acc = 0; CONFIG.dur.forEach(function(d){ START.push(acc); acc += d; }); var TOTAL = acc;
+
+/* ---------- Mapa urbano estilizado (determinista) ---------- */
+var NS = "http://www.w3.org/2000/svg", cam = document.getElementById("cam");
+function el(tag, at, parent){ var e = document.createElementNS(NS, tag); for(var k in at) e.setAttribute(k, at[k]); (parent||cam).appendChild(e); return e; }
+var seed = 7; function rnd(){ seed = (seed*16807) % 2147483647; return (seed-1)/2147483646; }
+el("rect",{x:-2000,y:-2000,width:6000,height:6000,fill:"#f1ece7"});
+// Campos (norte y este)
+for(var i=0;i<26;i++){ el("rect",{x:1180+ (i%6)*130, y:40+Math.floor(i/6)*110, width:120, height:100, rx:6, fill: i%3? "#ece6d4":"#e3ead3"}); }
+for(i=0;i<160;i++){ var tx = rnd()<.5 ? 40+rnd()*360 : 1500+rnd()*400, ty = rnd()<.5 ? 40+rnd()*300 : 780+rnd()*280; el("circle",{cx:tx,cy:ty,r:6+rnd()*6,fill:"#c6d9c3"}); }
+// Río
+el("path",{d:"M300 -40 C 380 200, 260 380, 420 560 S 470 900, 380 1120",stroke:"#cfe3e6",fill:"none","stroke-width":46,"stroke-linecap":"round"});
+// Casco: manzanas
+var core = []; for(var gx=0; gx<9; gx++) for(var gy=0; gy<8; gy++){
+  var x = 560 + gx*78 + (gy%2)*10, y = 230 + gy*76, w = 62 + rnd()*8, h = 58 + rnd()*8;
+  core.push(el("rect",{x:x,y:y,width:w,height:h,rx:4,fill:"#e6ddd5",stroke:"#d6cbc1","stroke-width":1.5}));
+  // parcelas internas
+  el("path",{d:"M"+(x+w/2)+" "+y+" V"+(y+h)+" M"+x+" "+(y+h/2)+" H"+(x+w),stroke:"#d6cbc1","stroke-width":1});
+}
+// Plaza
+el("rect",{x:874,y:458,width:62,height:60,rx:4,fill:"#dfe9dc"});
+// Polígono industrial
+for(i=0;i<8;i++){ el("rect",{x:1330+(i%4)*130, y:640+Math.floor(i/4)*150, width:110, height:120, rx:4, fill:"#dedde2", stroke:"#cbcad1","stroke-width":1.5}); }
+// Sector en desarrollo (líneas discontinuas)
+el("rect",{x:1320,y:300,width:420,height:250,rx:10,fill:"none",stroke:"#b9b0a8","stroke-width":3,"stroke-dasharray":"12 10"});
+for(i=0;i<12;i++){ el("rect",{x:1340+(i%6)*66, y:320+Math.floor(i/6)*110, width:56, height:96, rx:3, fill:"none", stroke:"#cfc6be","stroke-width":1.5}); }
+// Calles principales
+el("path",{d:"M520 200 H1290 M520 860 H1290 M540 180 V880 M1290 180 V1000 M1290 600 H1860",stroke:"#ffffff",fill:"none","stroke-width":10,"stroke-linecap":"round"});
+// Parcela protagonista
+var PX = 966, PY = 549, pW = 28, pH = 26;
+var parcel = el("rect",{x:PX-pW/2,y:PY-pH/2,width:pW,height:pH,rx:2,fill:"rgba(196,86,44,.22)",stroke:"#c4562c","stroke-width":3,"stroke-dasharray":"5 4",opacity:0});
+var halo = el("circle",{cx:PX,cy:PY,r:30,fill:"none",stroke:"#c4562c","stroke-width":2,opacity:0});
+// Pines de los 5 casos (escena 9)
+var PINS = [
+  {x:PX, y:PY, t:"Vivienda en el centro", s:"Reformar o ampliar", ic:"casa"},
+  {x:1460, y:760, t:"Nave industrial", s:"Cuánto puede crecer", ic:"nave"},
+  {x:740, y:380, t:"Edificio protegido", s:"Qué se conserva", ic:"col"},
+  {x:250, y:880, t:"Suelo rural", s:"Qué se admite", ic:"arbol"},
+  {x:1530, y:425, t:"Zona en desarrollo", s:"Cuándo se puede construir", ic:"grua", hitos:true}
+];
+var pinEls = PINS.map(function(p){ var g = el("g",{opacity:0}); el("circle",{cx:p.x,cy:p.y,r:20,fill:"#c4562c",stroke:"#fff","stroke-width":6},g); return g; });
+
+/* Iconos de línea */
+var ICON = {
+  casa:'<path d="M3 11l9-7 9 7v9H3z"/><path d="M9 20v-6h6v6"/>',
+  nave:'<path d="M3 20V9l5 3V9l5 3V6h8v14z"/><path d="M7 16h2M12 16h2M17 16h2"/>',
+  col:'<path d="M3 9l9-5 9 5z"/><path d="M5 9v9M9 9v9M15 9v9M19 9v9M3 20h18"/>',
+  arbol:'<circle cx="12" cy="9" r="6"/><path d="M12 15v6M8 21h8"/>',
+  grua:'<path d="M5 21V4h2v17M3 21h8M7 5h14l-3 4M18 9v4M16 13h4v3h-4z"/>'
+};
+var minis = document.getElementById("minis");
+PINS.forEach(function(p, i){
+  var d = document.createElement("div"); d.className = "mini";
+  d.style.left = (120 + i*344) + "px"; d.style.top = "760px";
+  d.setAttribute("data-a","up"); d.setAttribute("data-in", String(2.2 + i*0.9));
+  d.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#15603a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+ICON[p.ic]+'</svg><b>'+p.t+'</b><span>'+p.s+'</span>'+
+    (p.hitos ? '<div class="hitos"><i style="background:#237a49"></i><i style="background:#237a49"></i><i style="background:#237a49"></i><i style="background:#9a6700"></i><i></i></div>' : '');
+  minis.appendChild(d);
+});
+
+/* Municipio y textos opcionales */
+function setMuni(m){ document.querySelectorAll(".muni").forEach(function(e){ e.textContent = e.classList.contains("cap") ? m.charAt(0).toUpperCase()+m.slice(1) : m; }); }
+setMuni(CONFIG.municipio);
+document.getElementById("ref").textContent = CONFIG.referencia || "";
+document.getElementById("contacto").textContent = CONFIG.contacto || "";
+
+/* ---------- Motor de animación ---------- */
+function clamp(x){ return x<0?0:x>1?1:x; }
+function eo(x){ x=clamp(x); return 1-Math.pow(1-x,3); }
+function eio(x){ x=clamp(x); return x<.5 ? 4*x*x*x : 1-Math.pow(-2*x+2,3)/2; }
+var scenes = [].slice.call(document.querySelectorAll(".scene"));
+var anims = scenes.map(function(s){ return [].slice.call(s.querySelectorAll("[data-a]")); });
+var typers = scenes.map(function(s){ return [].slice.call(s.querySelectorAll("[data-type]")); });
+var mapSvg = document.getElementById("map");
+
+function applyAnim(e, l){
+  var a = e.getAttribute("data-a"), t0 = +e.getAttribute("data-in"), d = +(e.getAttribute("data-d")||.7);
+  var p = eo((l - t0)/d), tr = "", op = p;
+  switch(a){
+    case "up": tr = "translateY("+((1-p)*50)+"px)"; break;
+    case "left": tr = "translateX("+((1-p)*-70)+"px)"; break;
+    case "right": tr = "translateX("+((1-p)*90)+"px)"; break;
+    case "pop": tr = "scale("+(.7+.3*p)+")"; break;
+    case "growY": op = p>0?1:0; tr = "scaleY("+Math.max(p,.001)+")"; break;
+    case "burst": op = 1; tr = "scale("+(p*1.0+.001)+")"; break;
+    case "stamp": tr = "scale("+(1.8-.8*p)+") rotate(-4deg)"; break;
+    case "fly": tr = "translate("+((1-p)*-700)+"px,"+((1-p)*200)+"px) scale("+(.4+.6*p)+") rotate("+((1-p)*-12)+"deg)"; break;
+    case "tap": op = (l>=t0 && l<=t0+d) ? 1 - clamp((l-t0)/d)*.6 : 0; tr = "scale("+(.6+clamp((l-t0)/d))+")"; break;
+    case "lupa": { var q = eio((l-t0)/d); op = l<t0 ? 0 : (l > t0+d+0.8 ? 1-clamp((l-t0-d-0.8)/.4) : clamp((l-t0)/.3)); tr = "translate("+((1-q)*120)+"px,"+((1-q)*-150)+"px)"; break; }
+    default: tr = "";
+  }
+  e.style.opacity = op; e.style.transform = tr;
+}
+function applyType(e, l){
+  var txt = e.getAttribute("data-type"), t0 = +e.getAttribute("data-in"), cps = +(e.getAttribute("data-cps")||14);
+  var n = Math.max(0, Math.min(txt.length, Math.floor((l - t0) * cps)));
+  e.textContent = txt.slice(0, n) || " ";
+}
+
+window.render = function(T){
+  for(var k=0;k<scenes.length;k++){
+    var l = T - START[k], d = CONFIG.dur[k];
+    var fin = k===0 ? 1 : eo(l/.5), fout = k===scenes.length-1 ? 1 : 1 - eo((l-d)/.5);
+    var vis = l > -0.01 && l < d + 0.5;
+    scenes[k].style.opacity = vis ? Math.min(fin, fout) : 0;
+    scenes[k].style.visibility = vis ? "visible" : "hidden";
+    if(!vis) continue;
+    anims[k].forEach(function(e){ applyAnim(e, l); });
+    typers[k].forEach(function(e){ applyType(e, l); });
+  }
+  // Cursor de escritura
+  var caret = document.getElementById("caret"); caret.style.opacity = (Math.floor(T*2.4)%2) ? 0 : 1;
+  // Mapa: visible de la escena 4 a la 9, con cámara
+  var mOp = eo((T-START[3])/.6) * (1 - eo((T-START[9])/.6));
+  mapSvg.style.opacity = mOp;
+  var z1 = eio((T - (START[3]+.6)) / 3.2), z2 = eio((T - START[8]) / 1.8);
+  var zoom = 1 + 1.7*z1 - 1.7*z2 + 0.18*clamp((T-START[4])/(START[8]-START[4]))*(1-z2);
+  var focusX = PX*(1-z2) + 960*z2, focusY = PY*(1-z2) + 540*z2;
+  // punto de pantalla donde queda la parcela (deja hueco para tarjetas)
+  var sx = 760*(1-z2) + 960*z2, sy = 600*(1-z2) + 540*z2;
+  cam.setAttribute("transform","translate("+(sx - focusX*zoom)+","+(sy - focusY*zoom)+") scale("+zoom+")");
+  var pv = eo((T - (START[3]+2.8))/.6) * (1 - eo((T-START[8]-1.2)/.6));
+  parcel.setAttribute("opacity", pv);
+  var pul = (T*1.4)%1; halo.setAttribute("r", 18 + pul*30); halo.setAttribute("opacity", pv*(1-pul));
+  pinEls.forEach(function(g,i){ g.setAttribute("opacity", eo((T - START[8] - 1.6 - i*.9)/.5) * (1 - eo((T-START[9])/.5))); });
+  // Marca de agua
+  document.getElementById("wm").style.color = (T >= START[10]) ? "rgba(255,255,255,.6)" : "rgba(11,11,11,.42)";
+  // Controles
+  var si = 0; for(k=0;k<START.length;k++) if(T>=START[k]) si=k;
+  document.getElementById("sc").textContent = (si+1)+"/"+scenes.length;
+  document.querySelector("#bar i").style.width = (100*T/TOTAL)+"%";
+};
+window.VIDEO_TOTAL = TOTAL;
+
+/* ---------- Reproducción en vivo ---------- */
+var stage = document.getElementById("stage");
+function fit(){ var s = Math.min(innerWidth/1920, innerHeight/1080); stage.style.transform = "scale("+s+")"; }
+addEventListener("resize", fit); fit();
+var grabar = Q.get("grabar") === "1", manual = Q.get("manual") === "1";
+if(grabar || manual) document.getElementById("ctrl").style.display = "none";
+var t = 0, playing = !manual, last = null;
+function loop(ts){
+  if(last===null) last = ts;
+  if(playing){ t += (ts-last)/1000; if(t > TOTAL){ t = TOTAL; playing = false; document.getElementById("play").textContent = "▶"; } }
+  last = ts; window.render(t); if(!manual) requestAnimationFrame(loop);
+}
+if(manual) window.render(0); else setTimeout(function(){ requestAnimationFrame(loop); }, grabar ? 1000 : 0);
+document.getElementById("play").onclick = function(){ if(t>=TOTAL) t=0; playing = !playing; this.textContent = playing ? "⏸" : "▶"; };
+document.getElementById("rst").onclick = function(){ t = 0; playing = true; document.getElementById("play").textContent = "⏸"; };
+var mun = document.getElementById("mun"); mun.value = CONFIG.municipio; mun.oninput = function(){ setMuni(mun.value || "tu municipio"); };
+addEventListener("keydown", function(e){ if(e.code==="Space"){ e.preventDefault(); document.getElementById("play").click(); } if(e.key==="r"||e.key==="R") document.getElementById("rst").click(); });
+})();
+</script>
+<!--@@BODY_END@@-->
+</body>
+</html>
